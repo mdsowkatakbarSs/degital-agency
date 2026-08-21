@@ -1,6 +1,7 @@
-# ViralScale — Digital Agency Website
+# Digital Agency & Social Exchange
 
-Premium social media growth agency website (Facebook, TikTok, YouTube, Instagram).
+★ Social media growth & monetization services — YouTube, Facebook, Instagram & TikTok.
+Grow Faster. Reach Further. Monetize Smarter.
 
 **Stack:** Next.js 15.5 · TypeScript · Tailwind CSS v4 · shadcn/ui (radix-nova) · Supabase · Vercel
 
@@ -20,60 +21,77 @@ pnpm start
 
 ## Environment Variables
 
-Copy `.env.example` to `.env.local` and fill in your Supabase project values (Dashboard → Project Settings → API):
+`.env.local` holds the project credentials (already configured locally — do not commit):
 
 ```env
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SECRET_KEY=your-service-role-key
+NEXT_PUBLIC_SUPABASE_URL=https://xsroeglldbfkyajtpkdc.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key>
+SUPABASE_SECRET_KEY=<service role key>
 ```
 
-> Without real Supabase credentials the public site works fully; the contact form insert and admin login will fail gracefully until credentials are set.
+On Vercel, add the same variables in Project → Settings → Environment Variables and set
+`NEXT_PUBLIC_SITE_URL` to the production domain.
 
-## Database Setup
+## Database Setup (one time)
 
-1. Create a project at [supabase.com](https://supabase.com).
-2. Apply the schema — either run the SQL in `supabase/migrations/001_initial_schema.sql` in the Supabase SQL Editor, or:
-   ```bash
-   npx supabase login
-   npx supabase link --project-ref <your-project-ref>
-   npx supabase db push
-   ```
-3. Create an admin user: Dashboard → Authentication → Users → **Add User**.
-4. Auth URL config: Dashboard → Authentication → URL Configuration → set Site URL to your deployed domain.
+The app needs two tables (`orders`, `contacts`). Apply the schema in
+**Supabase Dashboard → SQL Editor → New query → paste → Run** using:
 
-## Deploy
+```
+supabase/migrations/001_initial_schema.sql
+```
+
+It creates both tables, RLS policies (public insert / authenticated read+update),
+`updated_at` triggers and indexes. Until this runs, `/api/order` responds with a
+clear "database not set up" message.
+
+Then create an admin user: **Dashboard → Authentication → Users → Add User**
+(email + password) to sign in at `/login`.
+
+## Deploy (auto-deploy via GitHub)
 
 ```bash
-git remote add origin https://github.com/YOUR_USERNAME/viralscale.git
+git remote add origin https://github.com/mdsowkatakbarSs/degital-agency.git
 git push -u origin main
 ```
 
-Then import the repo on [Vercel](https://vercel.com), add all `.env.local` variables in Project → Settings → Environment Variables (set `NEXT_PUBLIC_SITE_URL` to the production URL), and deploy.
+Vercel picks up pushes to `main` automatically once the project is imported
+(https://vercel.com/new → import `degital-agency` → add env vars → deploy).
 
-Before launch:
-- Add a 1200×630 OG image at `public/og-image.jpg`.
-- Replace favicon at `src/app/favicon.ico` if desired.
+## Features
+
+- **Hero** — brand headline "Grow Faster. Reach Further. Monetize Smarter."
+- **Services** — all 16 services grouped by platform (YouTube 5, Facebook 5,
+  Instagram 3, TikTok 3) with brand-colored icons
+- **Why Choose Us** — trust features
+- **Order Form** — Select Service (grouped dropdown), Qnty, Pay By
+  (PayPal/Other), payment Screen Shot upload (image only, ≤3MB, client-side
+  preview), optional note, Submit → saved to Supabase `orders`
+- **Admin Dashboard** (`/admin`, login-protected) — order stats cards, orders
+  table with status management (new / processing / completed / cancelled) and
+  screenshot viewer dialog (screenshots stored as data URLs in the DB; fetch on demand)
+- Dark/light theme toggle, Framer Motion animations, full SEO metadata + sitemap
 
 ## Structure
 
 ```
 src/
-  app/            # layout, home page, /login, /admin, /api/contact
-  sections/       # hero, platforms, services, pricing, testimonials, contact
-  components/     # navbar, footer, section-wrapper, stats-cards, contacts-table, ui/
+  app/            # layout, home page, /login, /admin, /api/order
+  sections/       # hero, services, why-us, order
+  components/     # navbar, footer, section-wrapper, stats-cards, orders-table, ui/
   lib/
-    constants.ts  # site config, platforms, services, pricing, testimonials
+    constants.ts  # site config, service groups, payment methods, statuses
     supabase/     # browser/server/middleware clients
   middleware.ts   # session refresh + /admin route protection
 supabase/
-  migrations/     # contacts table + RLS policies + indexes
+  migrations/     # 001_initial_schema.sql (orders + contacts)
 ```
 
-## Notes on Implementation
+## Notes
 
-- Tailwind v4 CSS-first theming is used (`src/app/globals.css`) instead of a v3-style `tailwind.config.ts`; all design tokens, platform colors (`facebook`, `tiktok`, `youtube`, `instagram`, …), and custom animations (`float`, `pulse-glow`, `gradient-shift`) from the original spec are preserved.
-- `lucide-react` is pinned to `0.545.0` (last 0.x line) because v1 removed brand icons used by this design.
-- The migration omits `alter table auth.users enable row level security;` (fails on hosted Supabase and is unnecessary — RLS is already enabled there).
-- Dark mode is the default theme; light mode toggles via the navbar button.
+- Tailwind v4 CSS-first theming in `src/app/globals.css` (tokens/animations from
+  the original spec preserved).
+- `lucide-react` pinned to `0.545.0` (v1 removed brand icons).
+- Screenshots are stored base64-encoded in the `orders.screenshot_data` text
+  column (capped ~3MB). If volume grows, switch to Supabase Storage buckets.

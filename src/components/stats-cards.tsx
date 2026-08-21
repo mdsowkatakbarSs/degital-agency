@@ -1,26 +1,26 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, Mail, CheckCircle, Clock } from "lucide-react";
+import { ShoppingBag, Bell, Clock, CheckCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
-interface Contact {
+interface OrderLite {
   id: string;
   status: string;
   created_at: string;
 }
 
-export function StatsCards({ contacts }: { contacts: Contact[] }) {
-  const total = contacts.length;
-  const newLeads = contacts.filter((c) => c.status === "new").length;
-  const contacted = contacts.filter((c) => c.status === "contacted").length;
-  const converted = contacts.filter((c) => c.status === "converted").length;
+export function StatsCards({ orders }: { orders: OrderLite[] }) {
+  const total = orders.length;
+  const newOrders = orders.filter((o) => o.status === "new").length;
+  const processing = orders.filter((o) => o.status === "processing").length;
+  const completed = orders.filter((o) => o.status === "completed").length;
 
   const stats = [
-    { label: "Total Leads", value: total, icon: Users, color: "text-blue-500", bg: "bg-blue-500/10" },
-    { label: "New", value: newLeads, icon: Mail, color: "text-yellow-500", bg: "bg-yellow-500/10" },
-    { label: "Contacted", value: contacted, icon: Clock, color: "text-orange-500", bg: "bg-orange-500/10" },
-    { label: "Converted", value: converted, icon: CheckCircle, color: "text-green-500", bg: "bg-green-500/10" },
+    { label: "Total Orders", value: total, icon: ShoppingBag, color: "text-blue-500", bg: "bg-blue-500/10" },
+    { label: "New", value: newOrders, icon: Bell, color: "text-yellow-500", bg: "bg-yellow-500/10" },
+    { label: "Processing", value: processing, icon: Clock, color: "text-orange-500", bg: "bg-orange-500/10" },
+    { label: "Completed", value: completed, icon: CheckCircle, color: "text-green-500", bg: "bg-green-500/10" },
   ];
 
   return (

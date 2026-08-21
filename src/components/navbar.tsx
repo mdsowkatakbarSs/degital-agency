@@ -3,18 +3,15 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Menu, Moon, Sun } from "lucide-react";
+import { Menu, Moon, Star, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { SITE_CONFIG } from "@/lib/constants";
 
 const navLinks = [
   { href: "#services", label: "Services" },
-  { href: "#platforms", label: "Platforms" },
-  { href: "#pricing", label: "Pricing" },
-  { href: "#testimonials", label: "Results" },
-  { href: "#contact", label: "Contact" },
+  { href: "#why-us", label: "Why Us" },
+  { href: "#order", label: "Order" },
 ];
 
 export function Navbar() {
@@ -42,10 +39,15 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">VS</span>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shrink-0">
+              <Star className="w-4 h-4 text-primary-foreground fill-primary-foreground" />
             </div>
-            <span className="font-bold text-xl tracking-tight">{SITE_CONFIG.name}</span>
+            <span className="font-bold tracking-tight hidden md:inline text-base lg:text-lg">
+              Digital Agency &amp; Social Exchange
+            </span>
+            <span className="font-bold tracking-tight md:hidden text-sm">
+              DA &amp; SE
+            </span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8">
@@ -74,7 +76,7 @@ export function Navbar() {
             </Button>
 
             <Button asChild className="hidden sm:inline-flex rounded-full px-6">
-              <Link href="#contact">Get Started</Link>
+              <Link href="#order">Order Now</Link>
             </Button>
 
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -96,8 +98,8 @@ export function Navbar() {
                     </Link>
                   ))}
                   <Button asChild className="w-full rounded-full mt-4">
-                    <Link href="#contact" onClick={() => setMobileOpen(false)}>
-                      Get Started
+                    <Link href="#order" onClick={() => setMobileOpen(false)}>
+                      Order Now
                     </Link>
                   </Button>
                 </div>

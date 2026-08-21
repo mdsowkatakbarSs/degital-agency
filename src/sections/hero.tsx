@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Play, Zap } from "lucide-react";
+import { ArrowRight, Rocket, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { STATS } from "@/lib/constants";
@@ -19,8 +19,8 @@ export function HeroSection() {
         <div className="text-center max-w-4xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <Badge variant="secondary" className="mb-6 px-4 py-1.5 text-sm font-medium rounded-full">
-              <Zap className="w-3.5 h-3.5 mr-1.5 text-yellow-500" />
-              Trusted by 500+ Brands Worldwide
+              <Rocket className="w-3.5 h-3.5 mr-1.5 text-yellow-500" />
+              Welcome To Our Platform
             </Badge>
           </motion.div>
 
@@ -30,34 +30,50 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6"
           >
-            Dominate <span className="gradient-text animate-gradient-shift">Social Media</span>
-            <br />Multiply Your Reach
+            Grow Faster.
+            <br />
+            Reach Further.{" "}
+            <span className="gradient-text animate-gradient-shift">Monetize Smarter.</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
+            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed"
           >
-            We engineer viral growth strategies for <span className="text-foreground font-medium">Facebook</span>, <span className="text-foreground font-medium">TikTok</span>, <span className="text-foreground font-medium">YouTube</span>, and <span className="text-foreground font-medium">Instagram</span>. Turn followers into loyal customers.
+            Your Trusted Partner For Social Media Growth &amp; Monetization Services
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed"
+          >
+            We provide professional solutions to help{" "}
+            <span className="text-foreground font-medium">creators</span>,{" "}
+            <span className="text-foreground font-medium">influencers</span>,{" "}
+            <span className="text-foreground font-medium">businesses</span> &amp;{" "}
+            <span className="text-foreground font-medium">brands</span>{" "}
+            grow their online presence across the world&apos;s leading social media platforms.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
           >
             <Button asChild size="lg" className="rounded-full px-8 h-14 text-base group">
-              <Link href="#contact">
-                Start Your Growth
+              <Link href="#order">
+                Order Now
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="rounded-full px-8 h-14 text-base">
-              <Link href="#platforms">
-                <Play className="mr-2 w-5 h-5" />See Our Work
+              <Link href="#services">
+                <Sparkles className="mr-2 w-5 h-5" />Our Services
               </Link>
             </Button>
           </motion.div>

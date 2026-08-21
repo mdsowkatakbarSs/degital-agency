@@ -1,26 +1,32 @@
 import { redirect } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { ContactsTable } from "@/components/contacts-table";
+import { OrdersTable } from "@/components/orders-table";
 import { StatsCards } from "@/components/stats-cards";
 import { Button } from "@/components/ui/button";
 import { logout } from "./logout-action";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     redirect("/login");
   }
 
-  const { data: contacts, error } = await supabase
-    .from("contacts")
-    .select("*")
+  const { data: orders, error } = await supabase
+    .from("orders")
+    .select(
+      "id, name, email, service, quantity, payment_method, note, status, screenshot_name, created_at"
+    )
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error fetching contacts:", error);
+    console.error("Error fetching orders:", error);
   }
 
   return (
@@ -29,7 +35,7 @@ export default async function AdminPage() {
         <div className="mb-8 flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground">Manage your leads and inquiries</p>
+            <p className="text-muted-foreground">Manage incoming service orders</p>
           </div>
           <form action={logout}>
             <Button type="submit" variant="outline" className="rounded-full gap-2">
@@ -39,10 +45,10 @@ export default async function AdminPage() {
           </form>
         </div>
 
-        <StatsCards contacts={contacts || []} />
+        <StatsCards orders={orders || []} />
 
         <div className="mt-8">
-          <ContactsTable contacts={contacts || []} />
+          <OrdersTable orders={orders || []} />
         </div>
       </div>
     </div>
