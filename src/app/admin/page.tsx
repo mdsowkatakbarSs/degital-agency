@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import { LogOut } from "lucide-react";
+import Link from "next/link";
+import { LogOut, Package } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { OrdersTable } from "@/components/orders-table";
 import { StatsCards } from "@/components/stats-cards";
@@ -21,7 +22,7 @@ export default async function AdminPage() {
   const { data: orders, error } = await supabase
     .from("orders")
     .select(
-      "id, name, email, service, quantity, payment_method, note, status, screenshot_name, created_at"
+      "id, name, email, service, quantity, payment_method, note, status, screenshot_name, created_at, gig_id, package_tier, package_price"
     )
     .order("created_at", { ascending: false });
 
@@ -37,12 +38,20 @@ export default async function AdminPage() {
             <h1 className="text-3xl font-bold">Dashboard</h1>
             <p className="text-muted-foreground">Manage incoming service orders</p>
           </div>
-          <form action={logout}>
-            <Button type="submit" variant="outline" className="rounded-full gap-2">
-              <LogOut className="w-4 h-4" />
-              Log out
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline" className="rounded-full gap-2">
+              <Link href="/admin/gigs">
+                <Package className="w-4 h-4" />
+                Manage Gigs
+              </Link>
             </Button>
-          </form>
+            <form action={logout}>
+              <Button type="submit" variant="outline" className="rounded-full gap-2">
+                <LogOut className="w-4 h-4" />
+                Log out
+              </Button>
+            </form>
+          </div>
         </div>
 
         <StatsCards orders={orders || []} />
