@@ -8,7 +8,7 @@ const MAX_SCREENSHOT_CHARS = MAX_SCREENSHOT_MB * 1024 * 1024 * 1.4; // base64 ov
 const orderSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
-  service: z.enum(ALL_SERVICES as [string, ...string[]]),
+  service: z.string().min(1),
   quantity: z.number().int().positive(),
   paymentMethod: z.enum(["PayPal", "Other"]),
   note: z.string().max(2000).optional(),
@@ -21,6 +21,10 @@ const orderSchema = z.object({
       "Screenshot must be an image"
     )
     .optional(),
+  // New gig-specific fields (optional for backward compatibility)
+  gigId: z.string().uuid().optional(),
+  packageTier: z.enum(["basic", "standard", "premium"]).optional(),
+  packagePrice: z.number().positive().optional(),
 });
 
 export async function POST(request: Request) {
@@ -38,6 +42,10 @@ export async function POST(request: Request) {
       note: validated.note ?? null,
       screenshot_name: validated.screenshotName ?? null,
       screenshot_data: validated.screenshotData ?? null,
+      // Gig-specific fields
+      gig_id: validated.gigId ?? null,
+      package_tier: validated.packageTier ?? null,
+      package_price: validated.packagePrice ?? null,
     });
 
     if (error) {
