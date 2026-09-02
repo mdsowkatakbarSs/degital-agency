@@ -46,7 +46,7 @@ export default function LoginPage() {
       >
         <div className="text-center mb-8">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mx-auto mb-4">
-            <span className="text-primary-foreground font-bold">VS</span>
+            <span className="text-primary-foreground font-bold text-lg">DA</span>
           </div>
           <h1 className="text-2xl font-bold">Admin Login</h1>
           <p className="text-sm text-muted-foreground mt-1">Sign in to access the dashboard</p>
