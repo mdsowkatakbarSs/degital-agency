@@ -48,6 +48,10 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
+  /* Brand accent — electric blue for CTAs and interactive elements */
+  --color-brand: #3b82f6;
+  --color-brand-foreground: #ffffff;
+
   /* Platform brand colors */
   --color-facebook: #1877f2;
   --color-tiktok: #000000;
@@ -56,7 +60,7 @@
   --color-twitter: #1da1f2;
   --color-linkedin: #0a66c2;
 
-  /* Custom animations */
+  /* Custom animations — all respect prefers-reduced-motion via media query below */
   --animate-float: float 3s ease-in-out infinite;
   --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
   --animate-gradient-shift: gradient-shift 8s ease infinite;
@@ -182,6 +186,26 @@
 
   ::selection {
     @apply bg-primary/20 text-primary;
+  }
+}
+
+/* Respect prefers-reduced-motion: disable all non-essential animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-float,
+  .animate-pulse-glow,
+  .animate-gradient-shift,
+  .animate-spin,
+  .animate-pulse {
+    animation: none !important;
   }
 }
 
