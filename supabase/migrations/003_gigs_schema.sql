@@ -1,7 +1,17 @@
 -- ============================================================
 -- Digital Agency & Social Exchange — gigs schema
 -- Adds Fiverr-style gig catalog with package tiers
+-- Safe to run even if the orders table doesn't exist yet
 -- ============================================================
+
+-- ---------- helper function (create if missing) ----------
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ language 'plpgsql';
 
 -- ---------- gigs (service catalog) ----------
 CREATE TABLE IF NOT EXISTS gigs (
@@ -53,27 +63,37 @@ CREATE POLICY "Authenticated manage gig_packages" ON gig_packages
   FOR ALL TO authenticated USING (true);
 
 -- ---------- extend orders to reference gig + package ----------
+-- Only runs if the orders table exists
 DO $$
 BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'orders' AND column_name = 'gig_id'
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_name = 'orders'
   ) THEN
-    ALTER TABLE orders ADD COLUMN gig_id uuid REFERENCES gigs(id);
-  END IF;
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_name = 'orders' AND column_name = 'gig_id'
+    ) THEN
+      ALTER TABLE orders ADD COLUMN gig_id uuid REFERENCES gigs(id);
+    END IF;
 
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'orders' AND column_name = 'package_tier'
-  ) THEN
-    ALTER TABLE orders ADD COLUMN package_tier text;
-  END IF;
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_name = 'orders' AND column_name = 'package_tier'
+    ) THEN
+      ALTER TABLE orders ADD COLUMN package_tier text;
+    END IF;
 
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'orders' AND column_name = 'package_price'
-  ) THEN
-    ALTER TABLE orders ADD COLUMN package_price numeric;
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_name = 'orders' AND column_name = 'package_price'
+    ) THEN
+      ALTER TABLE orders ADD COLUMN package_price numeric;
+    END IF;
+
+    RAISE NOTICE 'orders table extended with gig columns';
+  ELSE
+    RAISE NOTICE 'orders table does not exist — skipping ALTER (run 001_initial_schema.sql first)';
   END IF;
 END $$;
 
@@ -90,4 +110,14 @@ CREATE INDEX IF NOT EXISTS idx_gigs_slug ON gigs(slug);
 CREATE INDEX IF NOT EXISTS idx_gigs_active ON gigs(is_active) WHERE is_active = true;
 CREATE INDEX IF NOT EXISTS idx_gigs_sort ON gigs(sort_order);
 CREATE INDEX IF NOT EXISTS idx_gig_packages_gig_id ON gig_packages(gig_id);
-CREATE INDEX IF NOT EXISTS idx_orders_gig_id ON orders(gig_id);
+
+-- orders indexes only if the table exists
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_name = 'orders'
+  ) THEN
+    CREATE INDEX IF NOT EXISTS idx_orders_gig_id ON orders(gig_id);
+  END IF;
+END $$;

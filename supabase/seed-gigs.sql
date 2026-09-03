@@ -105,7 +105,7 @@ DO $$
 DECLARE
   gig RECORD;
 BEGIN
-  FOR gig IN SELECT id, slug, platform, starting_price FROM gigs ORDER BY sort_order
+  FOR gig IN SELECT id, slug, platform, starting_price, delivery_days FROM gigs ORDER BY sort_order
   LOOP
     -- Basic tier: ~1x starting price
     INSERT INTO gig_packages (gig_id, tier, name, price, delivery_days, features, sort_order)

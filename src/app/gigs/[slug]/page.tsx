@@ -36,6 +36,44 @@ const TIER_BADGE_COLORS: Record<string, string> = {
   premium: "bg-purple-500/10 text-purple-500",
 };
 
+/* ── Single-package price card ─────────────────────────────── */
+function SinglePackageCard({
+  pkg,
+  color,
+}: {
+  pkg: GigPackage;
+  color: string;
+}) {
+  const features: string[] = Array.isArray(pkg.features) ? pkg.features : [];
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="p-6 rounded-2xl border-2 shadow-md"
+      style={{ borderColor: color, backgroundColor: `${color}08` }}
+    >
+      <div className="mb-4">
+        <span className="text-3xl font-bold">{formatPrice(pkg.price)}</span>
+      </div>
+
+      <div className="flex items-center gap-1 text-sm text-muted-foreground mb-5">
+        <Clock className="w-4 h-4" />
+        {formatDeliveryDays(pkg.delivery_days)} delivery
+      </div>
+
+      <ul className="space-y-3">
+        {features.map((feature, i) => (
+          <li key={i} className="flex items-start gap-2.5 text-sm">
+            <Check className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+            <span>{feature}</span>
+          </li>
+        ))}
+      </ul>
+    </motion.div>
+  );
+}
+
+/* ── Main page ─────────────────────────────────────────────── */
 export default function GigDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -53,7 +91,6 @@ export default function GigDetailPage() {
         const found = data.gigs?.find((g: GigWithPackages) => g.slug === slug);
         if (found) {
           setGig(found);
-          // Default to the standard tier if available
           const standardPkg = found.gig_packages?.find(
             (p: GigPackage) => p.tier === "standard"
           );
@@ -67,8 +104,15 @@ export default function GigDetailPage() {
     fetchGig();
   }, [slug]);
 
+  const sortedPackages = [...(gig?.gig_packages || [])].sort(
+    (a, b) => a.sort_order - b.sort_order
+  );
+  const isSinglePackage = sortedPackages.length === 1;
+
+  // For single-package gigs, lock to that package
+  const activeTier = isSinglePackage ? sortedPackages[0]?.tier : selectedTier;
   const selectedPackage = gig?.gig_packages?.find(
-    (p: GigPackage) => p.tier === selectedTier
+    (p: GigPackage) => p.tier === activeTier
   );
 
   if (loading) {
@@ -109,9 +153,6 @@ export default function GigDetailPage() {
   }
 
   const color = PLATFORM_COLORS[gig.platform] || "#888";
-  const sortedPackages = [...(gig.gig_packages || [])].sort(
-    (a, b) => a.sort_order - b.sort_order
-  );
 
   return (
     <div className="min-h-screen pt-24 pb-32 lg:pb-12 px-4 sm:px-6 lg:px-8">
@@ -239,75 +280,79 @@ export default function GigDetailPage() {
             className="lg:col-span-1"
           >
             <div className="lg:sticky lg:top-28 space-y-4">
-              <h2 className="text-lg font-semibold">Choose a package</h2>
+              <h2 className="text-lg font-semibold">
+                {isSinglePackage ? "What you get" : "Choose a package"}
+              </h2>
 
-              {sortedPackages.map((pkg) => {
-                const isSelected = selectedTier === pkg.tier;
-                const features: string[] = Array.isArray(pkg.features)
-                  ? pkg.features
-                  : [];
+              {isSinglePackage && sortedPackages[0] ? (
+                <SinglePackageCard pkg={sortedPackages[0]} color={color} />
+              ) : (
+                sortedPackages.map((pkg) => {
+                  const isSelected = activeTier === pkg.tier;
+                  const features: string[] = Array.isArray(pkg.features)
+                    ? pkg.features
+                    : [];
 
-                return (
-                  <motion.button
-                    key={pkg.tier}
-                    onClick={() => setSelectedTier(pkg.tier)}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 ${
-                      isSelected
-                        ? `${TIER_COLORS[pkg.tier]} border-current shadow-md`
-                        : "border-border/50 bg-background hover:border-border"
-                    }`}
-                    style={
-                      isSelected
-                        ? { borderColor: color }
-                        : undefined
-                    }
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`text-xs font-medium px-2 py-0.5 rounded-full ${TIER_BADGE_COLORS[pkg.tier]}`}
-                        >
-                          {TIER_LABELS[pkg.tier]}
-                        </span>
-                        <span className="font-semibold">{pkg.name}</span>
-                      </div>
-                      {isSelected && (
-                        <div
-                          className="w-5 h-5 rounded-full flex items-center justify-center"
-                          style={{ backgroundColor: color }}
-                        >
-                          <Check className="w-3 h-3 text-white" />
+                  return (
+                    <motion.button
+                      key={pkg.tier}
+                      onClick={() => setSelectedTier(pkg.tier)}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
+                      className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 ${
+                        isSelected
+                          ? `${TIER_COLORS[pkg.tier]} border-current shadow-md`
+                          : "border-border/50 bg-background hover:border-border"
+                      }`}
+                      style={
+                        isSelected ? { borderColor: color } : undefined
+                      }
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-xs font-medium px-2 py-0.5 rounded-full ${TIER_BADGE_COLORS[pkg.tier]}`}
+                          >
+                            {TIER_LABELS[pkg.tier]}
+                          </span>
+                          <span className="font-semibold">{pkg.name}</span>
                         </div>
-                      )}
-                    </div>
+                        {isSelected && (
+                          <div
+                            className="w-5 h-5 rounded-full flex items-center justify-center"
+                            style={{ backgroundColor: color }}
+                          >
+                            <Check className="w-3 h-3 text-white" />
+                          </div>
+                        )}
+                      </div>
 
-                    <div className="mb-3">
-                      <span className="text-2xl font-bold">
-                        {formatPrice(pkg.price)}
-                      </span>
-                    </div>
+                      <div className="mb-3">
+                        <span className="text-2xl font-bold">
+                          {formatPrice(pkg.price)}
+                        </span>
+                      </div>
 
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
-                      <Clock className="w-3.5 h-3.5" />
-                      {formatDeliveryDays(pkg.delivery_days)}
-                    </div>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
+                        <Clock className="w-3.5 h-3.5" />
+                        {formatDeliveryDays(pkg.delivery_days)} delivery
+                      </div>
 
-                    <ul className="space-y-2">
-                      {features.map((feature, i) => (
-                        <li
-                          key={i}
-                          className="flex items-start gap-2 text-sm text-muted-foreground"
-                        >
-                          <Check className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.button>
-                );
-              })}
+                      <ul className="space-y-2">
+                        {features.map((feature, i) => (
+                          <li
+                            key={i}
+                            className="flex items-start gap-2 text-sm text-muted-foreground"
+                          >
+                            <Check className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.button>
+                  );
+                })
+              )}
 
               {/* Continue Button — Desktop */}
               {selectedPackage && (
@@ -315,7 +360,7 @@ export default function GigDetailPage() {
                   <Button
                     onClick={() =>
                       router.push(
-                        `/order?gig=${gig.slug}&tier=${selectedTier}`
+                        `/order?gig=${gig.slug}&tier=${activeTier}`
                       )
                     }
                     className="w-full rounded-full h-12 text-base"
@@ -348,7 +393,7 @@ export default function GigDetailPage() {
             <Button
               onClick={() =>
                 router.push(
-                  `/order?gig=${gig.slug}&tier=${selectedTier}`
+                  `/order?gig=${gig.slug}&tier=${activeTier}`
                 )
               }
               className="rounded-full h-11 px-6"
