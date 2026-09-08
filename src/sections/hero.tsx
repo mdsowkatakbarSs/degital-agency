@@ -5,9 +5,31 @@ import Link from "next/link";
 import { ArrowRight, Rocket, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { STATS } from "@/lib/constants";
 
-export function HeroSection() {
+export interface HeroContent {
+  badge: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  stats: { value: string; label: string }[];
+}
+
+export const DEFAULT_HERO: HeroContent = {
+  badge: "Welcome To Our Platform",
+  title: "Grow Faster. Reach Further. Monetize Smarter.",
+  subtitle:
+    "Your Trusted Partner For Social Media Growth & Monetization Services",
+  description:
+    "We provide professional solutions to help creators, influencers, businesses & brands grow their online presence across the world's leading social media platforms.",
+  stats: [
+    { value: "4", label: "Major Platforms" },
+    { value: "6+", label: "Growth Services" },
+    { value: "100%", label: "Safe Methods" },
+    { value: "24/7", label: "Support" },
+  ],
+};
+
+export function HeroSection({ content = DEFAULT_HERO }: { content?: HeroContent }) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
@@ -20,20 +42,18 @@ export function HeroSection() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <Badge variant="secondary" className="mb-6 px-4 py-1.5 text-sm font-medium rounded-full">
               <Rocket className="w-3.5 h-3.5 mr-1.5 text-yellow-500" />
-              Welcome To Our Platform
+              {content.badge}
             </Badge>
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6"
+            transition={{ duration: 0.6, delay: 0.1 }}            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6"
           >
-            Grow Faster.
-            <br />
-            Reach Further.{" "}
-            <span className="gradient-text animate-gradient-shift">Monetize Smarter.</span>
+            <span className="gradient-text animate-gradient-shift">
+              {content.title}
+            </span>
           </motion.h1>
 
           <motion.p
@@ -42,7 +62,7 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed"
           >
-            Your Trusted Partner For Social Media Growth &amp; Monetization Services
+            {content.subtitle}
           </motion.p>
 
           <motion.p
@@ -51,12 +71,7 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed"
           >
-            We provide professional solutions to help{" "}
-            <span className="text-foreground font-medium">creators</span>,{" "}
-            <span className="text-foreground font-medium">influencers</span>,{" "}
-            <span className="text-foreground font-medium">businesses</span> &amp;{" "}
-            <span className="text-foreground font-medium">brands</span>{" "}
-            grow their online presence across the world&apos;s leading social media platforms.
+            {content.description}
           </motion.p>
 
           <motion.div
@@ -84,7 +99,7 @@ export function HeroSection() {
             transition={{ duration: 0.7, delay: 0.5 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto"
           >
-            {STATS.map((stat, index) => (
+            {content.stats.map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-2xl sm:text-3xl font-bold text-foreground">{stat.value}</div>
                 <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>

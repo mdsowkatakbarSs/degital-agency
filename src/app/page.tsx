@@ -1,12 +1,31 @@
-import { HeroSection } from "@/sections/hero";
+import { HeroSection, DEFAULT_HERO } from "@/sections/hero";
 import { GigsSection } from "@/sections/gigs";
 import { WhyUsSection } from "@/sections/why-us";
 import { OrderSection } from "@/sections/order";
+import { getSiteSettings } from "@/lib/site-settings";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const settings = await getSiteSettings();
+
+  const heroContent = {
+    ...DEFAULT_HERO,
+    badge: settings.hero_badge,
+    title: settings.hero_title,
+    subtitle: settings.hero_subtitle,
+    description: settings.hero_description,
+    stats: [
+      { value: settings.stats_platforms, label: "Major Platforms" },
+      { value: settings.stats_services, label: "Growth Services" },
+      { value: settings.stats_safe, label: "Safe Methods" },
+      { value: settings.stats_support, label: "Support" },
+    ],
+  };
+
   return (
     <>
-      <HeroSection />
+      <HeroSection content={heroContent} />
       <GigsSection />
       <WhyUsSection />
       <OrderSection />

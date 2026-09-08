@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Star } from "lucide-react";
 import { SITE_CONFIG, SERVICE_GROUPS } from "@/lib/constants";
 
-export function Footer() {
+export function Footer({ tagline }: { tagline?: string }) {
+  const displayTagline = tagline || "Grow Faster. Reach Further. Monetize Smarter.";
   return (
     <footer className="border-t border-border/50 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -76,7 +77,7 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.
           </p>
-          <p>Grow Faster. Reach Further. Monetize Smarter.</p>
+          <p>{displayTagline}</p>
         </div>
       </div>
     </footer>

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LogOut, Package } from "lucide-react";
+import { LogOut, Megaphone, Package, Settings } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { OrdersTable } from "@/components/orders-table";
 import { StatsCards } from "@/components/stats-cards";
@@ -38,11 +38,23 @@ export default async function AdminPage() {
             <h1 className="text-3xl font-bold">Dashboard</h1>
             <p className="text-muted-foreground">Manage incoming service orders</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Button asChild variant="outline" className="rounded-full gap-2">
               <Link href="/admin/gigs">
                 <Package className="w-4 h-4" />
-                Manage Gigs
+                Gigs
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full gap-2">
+              <Link href="/admin/announcements">
+                <Megaphone className="w-4 h-4" />
+                Posts & Offers
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full gap-2">
+              <Link href="/admin/settings">
+                <Settings className="w-4 h-4" />
+                Settings
               </Link>
             </Button>
             <form action={logout}>
@@ -59,7 +71,7 @@ export default async function AdminPage() {
         <div className="mt-8">
           <OrdersTable orders={orders || []} />
         </div>
-      </div>
+  </div>
     </div>
   );
 }

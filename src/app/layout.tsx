@@ -3,9 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { AnnouncementBanner } from "@/components/announcement-banner";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
 import { SITE_CONFIG } from "@/lib/constants";
+import { getAnnouncements, getSiteSettings } from "@/lib/site-settings";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -66,15 +68,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const [announcements, settings] = await Promise.all([
+    getAnnouncements(),
+    getSiteSettings(),
+  ]);
+
   return (
     <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange={false}>
           <div className="relative min-h-screen flex flex-col">
+            {settings.announcement_enabled && announcements.length > 0 && (
+              <AnnouncementBanner announcements={announcements} />
+            )}
             <Navbar />
             <main className="flex-1">{children}</main>
-            <Footer />
+            <Footer tagline={settings.footer_tagline} />
           </div>
           <Toaster position="top-center" richColors />
           <Analytics />
