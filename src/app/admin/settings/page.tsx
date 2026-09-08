@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/card";
 import {
   DEFAULT_SETTINGS,
-} from "@/lib/site-settings";
+} from "@/lib/announcement-types";
 
 interface SettingsForm {
   announcement_enabled: boolean;

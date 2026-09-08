@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import Link from "next/link";
-import type { Announcement } from "@/lib/site-settings";
-import { TYPE_STYLES } from "@/lib/site-settings";
+import type { Announcement } from "@/lib/announcement-types";
+import { TYPE_STYLES } from "@/lib/announcement-types";
 
 const DISMISS_KEY = "da_dismissed_announcements";
 

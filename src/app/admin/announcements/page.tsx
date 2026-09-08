@@ -40,7 +40,7 @@ import {
   type Announcement,
   ANNOUNCEMENT_TYPES,
   TYPE_STYLES,
-} from "@/lib/site-settings";
+} from "@/lib/announcement-types";
 
 const EMPTY: Omit<Announcement, "id" | "created_at" | "updated_at"> = {
   title: "",
