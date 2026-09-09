@@ -1,4 +1,4 @@
-# Digital Agency & Social Exchange
+# ytgrowthgear.shop
 
 ★ Social media growth & monetization services — YouTube, Facebook, Instagram & TikTok.
 Grow Faster. Reach Further. Monetize Smarter.

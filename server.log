@@ -1,0 +1,13 @@
+$ next start
+   ▲ Next.js 15.5.23
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.102:3000
+
+ ✓ Starting...
+ ✓ Ready in 877ms
+Supabase error: {
+  code: 'PGRST205',
+  details: null,
+  hint: null,
+  message: "Could not find the table 'public.orders' in the schema cache"
+}

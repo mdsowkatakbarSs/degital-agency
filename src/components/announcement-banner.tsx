@@ -54,10 +54,10 @@ export function AnnouncementBanner({
         exit={{ height: 0, opacity: 0 }}
         className={`relative z-40 border-b ${style.border} ${style.bg}`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
             <span className="shrink-0">{style.icon}</span>
-            <p className="text-sm truncate flex-1">
+            <p className="text-xs sm:text-sm min-w-0 flex-1 sm:truncate">
               <span className={`font-semibold ${style.text}`}>
                 {announcement.title}:
               </span>{" "}
@@ -67,14 +67,14 @@ export function AnnouncementBanner({
               {announcement.link_url && (
                 <Link
                   href={announcement.link_url}
-                  className="text-xs font-medium underline underline-offset-2 hover:opacity-80 shrink-0"
+                  className="text-xs font-medium underline underline-offset-2 hover:opacity-80 shrink-0 whitespace-nowrap"
                 >
                   {announcement.link_label || "Learn more"}
                 </Link>
               )}
               <button
                 onClick={dismiss}
-                className="p-1 rounded-full hover:bg-background/50 transition-colors shrink-0"
+                className="p-1.5 -m-0.5 rounded-full hover:bg-background/50 transition-colors shrink-0"
                 aria-label="Dismiss announcement"
               >
                 <X className="w-4 h-4" />

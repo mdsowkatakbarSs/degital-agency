@@ -24,6 +24,7 @@ import {
   PAYMENT_METHODS,
   MAX_SCREENSHOT_MB,
 } from "@/lib/constants";
+import { PaymentMethods } from "@/components/payment-methods";
 
 const orderSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -139,7 +140,26 @@ export function OrderSection() {
           <p className="text-lg text-muted-foreground">
             Select your service, send payment and upload the receipt — we handle the rest.
           </p>
+          <p className="mt-3 text-sm font-medium flex flex-wrap items-center justify-center gap-1.5">
+            <span>💳 Pay</span>
+            <span className="text-muted-foreground">→</span>
+            <span>Send Screenshot</span>
+            <span className="text-muted-foreground">→</span>
+            <span>Submit Order</span>
+            <span className="text-green-600 dark:text-green-400">✅</span>
+          </p>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-2xl mx-auto"
+        >
+          <div className="p-8 rounded-2xl bg-background border border-border/50">
+            <PaymentMethods />
+          </div>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -212,7 +232,7 @@ export function OrderSection() {
                       </option>
                       {PAYMENT_METHODS.map((method) => (
                         <option key={method} value={method}>
-                          {method === "PayPal" ? "PayPal" : "Other"}
+                          {method}
                         </option>
                       ))}
                     </select>

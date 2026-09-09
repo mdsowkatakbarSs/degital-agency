@@ -26,6 +26,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { PAYMENT_METHODS, MAX_SCREENSHOT_MB } from "@/lib/constants";
+import { PaymentMethods } from "@/components/payment-methods";
 import type { GigWithPackages, GigPackage } from "@/lib/gigs";
 import {
   PLATFORM_COLORS,
@@ -290,12 +291,11 @@ function OrderPageContent() {
                   <select id="paymentMethod" defaultValue="" {...register("paymentMethod")} className={selectClasses}>
                     <option value="" disabled>
                       Select payment method
-                    </option>
-                    {PAYMENT_METHODS.map((method) => (
-                      <option key={method} value={method}>
-                        {method === "PayPal" ? "PayPal" : "Other"}
-                      </option>
-                    ))}
+                    </option>                      {PAYMENT_METHODS.map((method) => (
+                        <option key={method} value={method}>
+                          {method}
+                        </option>
+                      ))}
                   </select>
                   {errors.paymentMethod && (
                     <p className="text-xs text-destructive">{errors.paymentMethod.message}</p>
@@ -372,7 +372,7 @@ function OrderPageContent() {
                     </>
                   ) : (
                     <>
-                      <Send className="mr-2 h-4 h-4" />Submit Order
+                      <Send className="mr-2 h-4 w-4" />Submit Order
                     </>
                   )}
                 </Button>
@@ -459,6 +459,9 @@ function OrderPageContent() {
                 <p className="text-xs text-center text-muted-foreground mt-3">
                   Upload your payment proof and we&apos;ll confirm shortly.
                 </p>
+              </div>
+              <div className="mt-4">
+                <PaymentMethods />
               </div>
             </motion.div>
           </div>
