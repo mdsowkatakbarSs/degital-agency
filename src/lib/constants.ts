@@ -61,8 +61,6 @@ export const ALL_SERVICES = SERVICE_GROUPS.flatMap((g) =>
   g.items.map((i) => i.name)
 );
 
-export const PAYMENT_METHODS = ["Zelle", "CashApp", "Other"] as const;
-
 export const PAYMENT_DETAILS = {
   zelle: {
     label: "Zelle",
@@ -86,11 +84,6 @@ export const CONTACT_INFO = {
     "https://wa.me/8801761391880?text=Hi%2C%20I%27m%20interested%20in%20your%20social%20media%20growth%20services.",
   serviceCountry: "Bangladesh",
 } as const;
-
-export const ORDER_STEPS = [
-  "First, complete the required payment for your selected package.",
-  "After making the payment, send us your payment screenshot and submit your order.",
-] as const;
 
 export const ORDER_STATUSES = [
   "new",

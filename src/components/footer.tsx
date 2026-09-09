@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mail, MapPin, Star } from "lucide-react";
 import { CONTACT_INFO, SITE_CONFIG, SERVICE_GROUPS } from "@/lib/constants";
+import { PaymentPartners } from "@/components/payment-methods";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -109,11 +110,17 @@ export function Footer({ tagline }: { tagline?: string }) {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border/50 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>
-            © {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.
-          </p>
-          <p>{displayTagline}</p>
+        <div className="mt-12 pt-8 border-t border-border/50">
+          <div className="mb-6">
+            <h4 className="font-semibold mb-3 text-sm">Payment Partners</h4>
+            <PaymentPartners />
+          </div>
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+            <p>
+              © {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.
+            </p>
+            <p>{displayTagline}</p>
+          </div>
         </div>
       </div>
     </footer>
