@@ -10,7 +10,7 @@ const orderSchema = z.object({
   email: z.string().email(),
   service: z.string().min(1),
   quantity: z.number().int().positive(),
-  paymentMethod: z.enum(["PayPal", "Other"]),
+  paymentMethod: z.enum(["Zelle", "CashApp", "PayPal", "Other"]),
   note: z.string().max(2000).optional(),
   screenshotName: z.string().max(255).optional(),
   screenshotData: z
