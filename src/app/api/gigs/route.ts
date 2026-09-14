@@ -14,7 +14,8 @@ export async function GET(request: Request) {
       .from("gigs")
       .select("*, gig_packages(*)")
       .eq("is_active", true)
-      .order("sort_order");
+      .order("sort_order")
+      .order("sort_order", { referencedTable: "gig_packages" });
 
     if (platform && platform !== "all") {
       query = query.eq("platform", platform);
