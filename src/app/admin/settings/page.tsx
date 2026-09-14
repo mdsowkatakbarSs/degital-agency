@@ -38,6 +38,9 @@ interface SettingsForm {
   contact_email: string;
   contact_whatsapp: string;
   service_country: string;
+  payment_zelle_email: string;
+  payment_cashapp_cashtag: string;
+  payment_cashapp_qr: string;
 }
 
 export default function AdminSettingsPage() {
@@ -57,6 +60,9 @@ export default function AdminSettingsPage() {
     contact_email: "",
     contact_whatsapp: "",
     service_country: "",
+    payment_zelle_email: "",
+    payment_cashapp_cashtag: "",
+    payment_cashapp_qr: "",
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -92,6 +98,12 @@ export default function AdminSettingsPage() {
         contact_email: map.contact_email || DEFAULT_SETTINGS.contact_email,
         contact_whatsapp: map.contact_whatsapp || DEFAULT_SETTINGS.contact_whatsapp,
         service_country: map.service_country || DEFAULT_SETTINGS.service_country,
+        payment_zelle_email:
+          map.payment_zelle_email || DEFAULT_SETTINGS.payment_zelle_email,
+        payment_cashapp_cashtag:
+          map.payment_cashapp_cashtag || DEFAULT_SETTINGS.payment_cashapp_cashtag,
+        payment_cashapp_qr:
+          map.payment_cashapp_qr || DEFAULT_SETTINGS.payment_cashapp_qr,
       });
     }
     setLoading(false);
@@ -311,6 +323,67 @@ export default function AdminSettingsPage() {
                   onChange={(e) => update("service_country", e.target.value)}
                   placeholder="Bangladesh"
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Payment details */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Payment Details (checkout only)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-xs text-muted-foreground">
+                Shown to customers only during checkout (never on the homepage).
+                The CashApp QR image must be a URL or site path like
+                /payments/cashapp-qr.jpg
+              </p>
+              <div className="space-y-2">
+                <Label>Zelle email</Label>
+                <Input
+                  value={form.payment_zelle_email}
+                  onChange={(e) =>
+                    update("payment_zelle_email", e.target.value)
+                  }
+                  placeholder="prakashauzee15@gmail.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>CashApp $Cashtag</Label>
+                <Input
+                  value={form.payment_cashapp_cashtag}
+                  onChange={(e) =>
+                    update("payment_cashapp_cashtag", e.target.value)
+                  }
+                  placeholder="$AimeeKhuu"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>CashApp QR image URL</Label>
+                <Input
+                  value={form.payment_cashapp_qr}
+                  onChange={(e) =>
+                    update("payment_cashapp_qr", e.target.value)
+                  }
+                  placeholder="/payments/cashapp-qr.jpg"
+                />
+                {form.payment_cashapp_qr ? (
+                  <div className="mt-1 flex items-center gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={form.payment_cashapp_qr}
+                      alt="QR preview"
+                      className="w-16 h-16 rounded-lg border object-cover"
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      QR preview
+                    </span>
+                  </div>
+                ) : null}
+                <p className="text-xs text-muted-foreground">
+                  To upload a new QR: add the image to the repo
+                  (public/payments/) or paste any public image URL.
+                </p>
               </div>
             </CardContent>
           </Card>

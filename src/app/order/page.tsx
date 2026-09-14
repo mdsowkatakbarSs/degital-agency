@@ -26,7 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { MAX_SCREENSHOT_MB, PAYMENT_DETAILS } from "@/lib/constants";
+import { MAX_SCREENSHOT_MB } from "@/lib/constants";
 import {
   PaymentMethodInfo,
   PaymentWorkflowLine,

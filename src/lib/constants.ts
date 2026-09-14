@@ -61,22 +61,6 @@ export const ALL_SERVICES = SERVICE_GROUPS.flatMap((g) =>
   g.items.map((i) => i.name)
 );
 
-export const PAYMENT_DETAILS = {
-  zelle: {
-    label: "Zelle",
-    email: "prakashauzee15@gmail.com",
-    link: "https://www.zelle.com/",
-    hint: "Send payment to the Zelle email above, then upload your confirmation screenshot.",
-  },
-  cashapp: {
-    label: "CashApp",
-    cashtag: "$AimeeKhuu",
-    link: "https://cash.app/",
-    qrImage: "/payments/cashapp-qr.jpg",
-    hint: "Scan the QR or send to the $Cashtag above, then upload your confirmation screenshot.",
-  },
-} as const;
-
 export const CONTACT_INFO = {
   email: "ytgrowthgear2026@gmail.com",
   whatsapp: "+8801761391880",

@@ -18,6 +18,10 @@ export interface SiteSettings {
   contact_email: string;
   contact_whatsapp: string;
   service_country: string;
+  /* Payment details (admin-editable, shown at checkout only) */
+  payment_zelle_email: string;
+  payment_cashapp_cashtag: string;
+  payment_cashapp_qr: string;
 }
 
 export const DEFAULT_SETTINGS: SiteSettings = {
@@ -43,6 +47,9 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   contact_email: "ytgrowthgear2026@gmail.com",
   contact_whatsapp: "+8801761391880",
   service_country: "Bangladesh",
+  payment_zelle_email: "prakashauzee15@gmail.com",
+  payment_cashapp_cashtag: "$AimeeKhuu",
+  payment_cashapp_qr: "/payments/cashapp-qr.jpg",
 };
 
 export interface Announcement {

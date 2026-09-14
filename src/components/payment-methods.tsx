@@ -1,6 +1,50 @@
-import Link from "next/link";
+"use client";
+
+import { useEffect, useState } from "react";
 import { Mail, QrCode, ExternalLink } from "lucide-react";
-import { PAYMENT_DETAILS } from "@/lib/constants";
+import { DEFAULT_SETTINGS } from "@/lib/announcement-types";
+
+/** The subset of settings used by payment components. */
+export type PaymentDetails = {
+  zelleEmail: string;
+  cashappCashtag: string;
+  cashappQr: string;
+};
+
+const FALLBACK: PaymentDetails = {
+  zelleEmail: DEFAULT_SETTINGS.payment_zelle_email,
+  cashappCashtag: DEFAULT_SETTINGS.payment_cashapp_cashtag,
+  cashappQr: DEFAULT_SETTINGS.payment_cashapp_qr,
+};
+
+/**
+ * Fetch admin-editable payment details from the public settings endpoint.
+ * Renders immediately with defaults, then swaps in DB values once loaded —
+ * so the checkout never blocks or flashes empty.
+ */
+export function usePaymentDetails(): PaymentDetails {
+  const [details, setDetails] = useState<PaymentDetails>(FALLBACK);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/site-settings")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data) return;
+        setDetails({
+          zelleEmail: data.payment_zelle_email || FALLBACK.zelleEmail,
+          cashappCashtag: data.payment_cashapp_cashtag || FALLBACK.cashappCashtag,
+          cashappQr: data.payment_cashapp_qr || FALLBACK.cashappQr,
+        });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return details;
+}
 
 export function ZelleIcon({ className }: { className?: string }) {
   return (
@@ -48,13 +92,16 @@ export function PaymentPartners({ className }: { className?: string }) {
   );
 }
 
-type MethodKey = keyof typeof PAYMENT_DETAILS | "other";
+type MethodKey = "zelle" | "cashapp" | "other";
 
 /**
  * Detailed payment instructions for ONE method — shown inside the
  * order flow's "Payment" step only. Never rendered on the homepage.
+ * Details come from the admin-editable Settings panel.
  */
 export function PaymentMethodInfo({ method }: { method: MethodKey }) {
+  const details = usePaymentDetails();
+
   if (method === "zelle") {
     return (
       <div className="p-4 sm:p-5 rounded-2xl border border-[#6D1ED4]/25 bg-[#6D1ED4]/5">
@@ -65,7 +112,7 @@ export function PaymentMethodInfo({ method }: { method: MethodKey }) {
           <div>
             <h3 className="font-semibold text-sm leading-tight">Pay with Zelle</h3>
             <a
-              href={PAYMENT_DETAILS.zelle.link}
+              href="https://www.zelle.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2 inline-flex items-center gap-1"
@@ -81,11 +128,12 @@ export function PaymentMethodInfo({ method }: { method: MethodKey }) {
         <div className="flex items-center gap-2 p-3 rounded-xl bg-background border border-border text-sm">
           <Mail className="w-4 h-4 shrink-0 text-[#6D1ED4]" />
           <span className="font-semibold truncate select-all">
-            {PAYMENT_DETAILS.zelle.email}
+            {details.zelleEmail}
           </span>
         </div>
         <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-          {PAYMENT_DETAILS.zelle.hint}
+          Send payment to the Zelle email above, then upload your confirmation
+          screenshot.
         </p>
       </div>
     );
@@ -101,7 +149,7 @@ export function PaymentMethodInfo({ method }: { method: MethodKey }) {
           <div>
             <h3 className="font-semibold text-sm leading-tight">Pay with CashApp</h3>
             <a
-              href={PAYMENT_DETAILS.cashapp.link}
+              href="https://cash.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2 inline-flex items-center gap-1"
@@ -116,7 +164,7 @@ export function PaymentMethodInfo({ method }: { method: MethodKey }) {
         </p>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <a
-            href={PAYMENT_DETAILS.cashapp.qrImage}
+            href={details.cashappQr}
             target="_blank"
             rel="noopener noreferrer"
             className="shrink-0 self-center sm:self-auto rounded-xl overflow-hidden border border-border bg-background p-1.5"
@@ -124,7 +172,7 @@ export function PaymentMethodInfo({ method }: { method: MethodKey }) {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={PAYMENT_DETAILS.cashapp.qrImage}
+              src={details.cashappQr}
               alt="CashApp QR code — tap to enlarge"
               className="w-36 h-36 sm:w-40 sm:h-40 object-cover rounded-lg"
               loading="lazy"
@@ -134,12 +182,13 @@ export function PaymentMethodInfo({ method }: { method: MethodKey }) {
             <div className="flex items-center gap-2 p-3 rounded-xl bg-background border border-border text-sm">
               <span className="text-muted-foreground shrink-0">Ac:</span>
               <span className="font-semibold truncate select-all">
-                {PAYMENT_DETAILS.cashapp.cashtag}
+                {details.cashappCashtag}
               </span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed flex items-start gap-1.5">
               <QrCode className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-              Tap the QR to enlarge. {PAYMENT_DETAILS.cashapp.hint}
+              Tap the QR to enlarge. Scan the QR or send to the $Cashtag above,
+              then upload your confirmation screenshot.
             </p>
           </div>
         </div>

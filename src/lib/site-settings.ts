@@ -39,6 +39,12 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       contact_whatsapp:
         map.contact_whatsapp || DEFAULT_SETTINGS.contact_whatsapp,
       service_country: map.service_country || DEFAULT_SETTINGS.service_country,
+      payment_zelle_email:
+        map.payment_zelle_email || DEFAULT_SETTINGS.payment_zelle_email,
+      payment_cashapp_cashtag:
+        map.payment_cashapp_cashtag || DEFAULT_SETTINGS.payment_cashapp_cashtag,
+      payment_cashapp_qr:
+        map.payment_cashapp_qr || DEFAULT_SETTINGS.payment_cashapp_qr,
     };
   } catch {
     return DEFAULT_SETTINGS;
