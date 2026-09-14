@@ -7,11 +7,17 @@ export interface SiteSettings {
   hero_title: string;
   hero_subtitle: string;
   hero_description: string;
-  stats_platforms: string;
-  stats_services: string;
-  stats_safe: string;
-  stats_support: string;
   footer_tagline: string;
+  /* Services section headings */
+  services_title: string;
+  services_subtitle: string;
+  /* Live activity ticker (footer) */
+  ticker_enabled: boolean;
+  activity_feed: string[];
+  /* Contact details (admin-editable) */
+  contact_email: string;
+  contact_whatsapp: string;
+  service_country: string;
 }
 
 export const DEFAULT_SETTINGS: SiteSettings = {
@@ -22,11 +28,21 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     "Your Trusted Partner For Social Media Growth & Monetization Services",
   hero_description:
     "We provide professional solutions to help creators, influencers, businesses & brands grow their online presence across the world's leading social media platforms.",
-  stats_platforms: "4",
-  stats_services: "6+",
-  stats_safe: "100%",
-  stats_support: "24/7",
   footer_tagline: "Grow Faster. Reach Further. Monetize Smarter.",
+  services_title: "Our Services",
+  services_subtitle:
+    "Professional growth & monetization solutions for every major platform.",
+  ticker_enabled: true,
+  activity_feed: [
+    "Order #1042 Completed – YouTube 5K Views Delivered",
+    "Order #1041 Completed – YouTube Monetization Support Delivered",
+    "Order #1040 Completed – YouTube 1K Views Delivered",
+    "New orders are being processed right now ✅",
+    "500+ orders delivered to creators worldwide",
+  ],
+  contact_email: "ytgrowthgear2026@gmail.com",
+  contact_whatsapp: "+8801761391880",
+  service_country: "Bangladesh",
 };
 
 export interface Announcement {

@@ -30,11 +30,14 @@ interface SettingsForm {
   hero_title: string;
   hero_subtitle: string;
   hero_description: string;
-  stats_platforms: string;
-  stats_services: string;
-  stats_safe: string;
-  stats_support: string;
   footer_tagline: string;
+  services_title: string;
+  services_subtitle: string;
+  ticker_enabled: boolean;
+  activity_feed: string;
+  contact_email: string;
+  contact_whatsapp: string;
+  service_country: string;
 }
 
 export default function AdminSettingsPage() {
@@ -46,11 +49,14 @@ export default function AdminSettingsPage() {
     hero_title: "",
     hero_subtitle: "",
     hero_description: "",
-    stats_platforms: "",
-    stats_services: "",
-    stats_safe: "",
-    stats_support: "",
     footer_tagline: "",
+    services_title: "",
+    services_subtitle: "",
+    ticker_enabled: true,
+    activity_feed: "",
+    contact_email: "",
+    contact_whatsapp: "",
+    service_country: "",
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -78,11 +84,14 @@ export default function AdminSettingsPage() {
         hero_title: map.hero_title || DEFAULT_SETTINGS.hero_title,
         hero_subtitle: map.hero_subtitle || DEFAULT_SETTINGS.hero_subtitle,
         hero_description: map.hero_description || DEFAULT_SETTINGS.hero_description,
-        stats_platforms: map.stats_platforms || DEFAULT_SETTINGS.stats_platforms,
-        stats_services: map.stats_services || DEFAULT_SETTINGS.stats_services,
-        stats_safe: map.stats_safe || DEFAULT_SETTINGS.stats_safe,
-        stats_support: map.stats_support || DEFAULT_SETTINGS.stats_support,
         footer_tagline: map.footer_tagline || DEFAULT_SETTINGS.footer_tagline,
+        services_title: map.services_title || DEFAULT_SETTINGS.services_title,
+        services_subtitle: map.services_subtitle || DEFAULT_SETTINGS.services_subtitle,
+        ticker_enabled: (map.ticker_enabled ?? "true") === "true",
+        activity_feed: map.activity_feed || DEFAULT_SETTINGS.activity_feed.join("\n"),
+        contact_email: map.contact_email || DEFAULT_SETTINGS.contact_email,
+        contact_whatsapp: map.contact_whatsapp || DEFAULT_SETTINGS.contact_whatsapp,
+        service_country: map.service_country || DEFAULT_SETTINGS.service_country,
       });
     }
     setLoading(false);
@@ -215,49 +224,93 @@ export default function AdminSettingsPage() {
             </CardContent>
           </Card>
 
-          {/* Stats */}
+          {/* Services section headings */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Homepage Stats</CardTitle>
+              <CardTitle className="text-base">Services Section (Homepage)</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Stat 1 — value</Label>
-                  <Input
-                    value={form.stats_platforms}
-                    onChange={(e) => update("stats_platforms", e.target.value)}
-                    placeholder="4"
-                  />
-                  <p className="text-xs text-muted-foreground">Label: Major Platforms</p>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Section title</Label>
+                <Input
+                  value={form.services_title}
+                  onChange={(e) => update("services_title", e.target.value)}
+                  placeholder="Our Services"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Section subtitle</Label>
+                <Input
+                  value={form.services_subtitle}
+                  onChange={(e) => update("services_subtitle", e.target.value)}
+                  placeholder="Professional growth & monetization solutions..."
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Live activity ticker */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Live Activity Ticker (footer)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between rounded-lg border p-4">
+                <div>
+                  <Label>Show activity ticker</Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Social-proof line cycling through recent activity above the footer
+                  </p>
                 </div>
-                <div className="space-y-2">
-                  <Label>Stat 2 — value</Label>
-                  <Input
-                    value={form.stats_services}
-                    onChange={(e) => update("stats_services", e.target.value)}
-                    placeholder="16"
-                  />
-                  <p className="text-xs text-muted-foreground">Label: Growth Services</p>
-                </div>
-                <div className="space-y-2">
-                  <Label>Stat 3 — value</Label>
-                  <Input
-                    value={form.stats_safe}
-                    onChange={(e) => update("stats_safe", e.target.value)}
-                    placeholder="100%"
-                  />
-                  <p className="text-xs text-muted-foreground">Label: Safe Methods</p>
-                </div>
-                <div className="space-y-2">
-                  <Label>Stat 4 — value</Label>
-                  <Input
-                    value={form.stats_support}
-                    onChange={(e) => update("stats_support", e.target.value)}
-                    placeholder="24/7"
-                  />
-                  <p className="text-xs text-muted-foreground">Label: Support</p>
-                </div>
+                <Switch
+                  checked={form.ticker_enabled}
+                  onCheckedChange={(checked) => update("ticker_enabled", checked)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Activity feed (one item per line)</Label>
+                <Textarea
+                  value={form.activity_feed}
+                  onChange={(e) => update("activity_feed", e.target.value)}
+                  rows={5}
+                  placeholder={"Order #1042 Completed – YouTube 5K Views Delivered\nOrder #1041 Completed – YouTube Monetization Support Delivered"}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Each line shows in rotation, e.g. &quot;Order #1042 Completed – YouTube 5K Views Delivered&quot;
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Contact info */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Contact Details (footer & navbar)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Contact email</Label>
+                <Input
+                  value={form.contact_email}
+                  onChange={(e) => update("contact_email", e.target.value)}
+                  placeholder="ytgrowthgear2026@gmail.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>WhatsApp number (with country code)</Label>
+                <Input
+                  value={form.contact_whatsapp}
+                  onChange={(e) => update("contact_whatsapp", e.target.value)}
+                  placeholder="+8801761391880"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Service country</Label>
+                <Input
+                  value={form.service_country}
+                  onChange={(e) => update("service_country", e.target.value)}
+                  placeholder="Bangladesh"
+                />
               </div>
             </CardContent>
           </Card>

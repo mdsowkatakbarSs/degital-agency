@@ -24,11 +24,21 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       hero_subtitle: map.hero_subtitle || DEFAULT_SETTINGS.hero_subtitle,
       hero_description:
         map.hero_description || DEFAULT_SETTINGS.hero_description,
-      stats_platforms: map.stats_platforms || DEFAULT_SETTINGS.stats_platforms,
-      stats_services: map.stats_services || DEFAULT_SETTINGS.stats_services,
-      stats_safe: map.stats_safe || DEFAULT_SETTINGS.stats_safe,
-      stats_support: map.stats_support || DEFAULT_SETTINGS.stats_support,
       footer_tagline: map.footer_tagline || DEFAULT_SETTINGS.footer_tagline,
+      services_title: map.services_title || DEFAULT_SETTINGS.services_title,
+      services_subtitle:
+        map.services_subtitle || DEFAULT_SETTINGS.services_subtitle,
+      ticker_enabled: (map.ticker_enabled ?? "true") === "true",
+      activity_feed: map.activity_feed
+        ? map.activity_feed
+            .split("\n")
+            .map((line) => line.trim())
+            .filter(Boolean)
+        : DEFAULT_SETTINGS.activity_feed,
+      contact_email: map.contact_email || DEFAULT_SETTINGS.contact_email,
+      contact_whatsapp:
+        map.contact_whatsapp || DEFAULT_SETTINGS.contact_whatsapp,
+      service_country: map.service_country || DEFAULT_SETTINGS.service_country,
     };
   } catch {
     return DEFAULT_SETTINGS;

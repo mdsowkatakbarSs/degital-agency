@@ -39,7 +39,6 @@ import {
   PLATFORM_LABELS,
   formatPrice,
   formatDeliveryDays,
-  TIER_LABELS,
 } from "@/lib/gigs";
 
 const orderSchema = z.object({
@@ -333,7 +332,7 @@ function OrderPageContent() {
             <h1 className="text-3xl font-bold mb-3">Order Submitted!</h1>
             <p className="text-muted-foreground text-lg max-w-md mx-auto mb-8">
               We&apos;ve received your order for <strong>{gig.title}</strong> (
-              {TIER_LABELS[selectedTier]} package). We&apos;ll review your payment
+              {pkg ? pkg.name : selectedTier} package). We&apos;ll review your payment
               screenshot and confirm shortly.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -354,7 +353,7 @@ function OrderPageContent() {
             <h1 className="text-2xl font-bold text-center mb-2">Complete your order</h1>
             <p className="text-muted-foreground text-center mb-8">
               <span className="font-medium text-foreground">{gig.title}</span> ·{" "}
-              {TIER_LABELS[selectedTier]} package
+              {pkg ? pkg.name : selectedTier} package
             </p>
 
             {stepper}
@@ -419,7 +418,7 @@ function OrderPageContent() {
                                 : "border-border/50 hover:border-border"
                             }`}
                           >
-                            <div>{TIER_LABELS[p.tier]}</div>
+                            <div className="truncate max-w-full">{p.name || p.tier}</div>
                             <div className="text-muted-foreground mt-0.5">
                               {formatPrice(p.price)}
                             </div>
@@ -485,7 +484,7 @@ function OrderPageContent() {
                       <span className="font-medium text-foreground">
                         {formatPrice(totalPrice)}
                       </span>{" "}
-                      for {gig.title} ({TIER_LABELS[selectedTier]} × {quantity}).
+                      for {gig.title} ({pkg ? pkg.name : selectedTier} × {quantity}).
                     </p>
 
                     {/* Method cards */}
@@ -575,7 +574,7 @@ function OrderPageContent() {
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Service</span>
                         <span className="font-medium truncate max-w-[60%] text-right">
-                          {gig.title} — {TIER_LABELS[selectedTier]}
+                          {gig.title} — {pkg ? pkg.name : selectedTier}
                         </span>
                       </div>
                       <div className="flex justify-between">

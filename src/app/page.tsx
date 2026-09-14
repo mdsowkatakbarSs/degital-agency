@@ -15,18 +15,12 @@ export default async function Home() {
     title: settings.hero_title,
     subtitle: settings.hero_subtitle,
     description: settings.hero_description,
-    stats: [
-      { value: settings.stats_platforms, label: "Major Platforms" },
-      { value: settings.stats_services, label: "Growth Services" },
-      { value: settings.stats_safe, label: "Safe Methods" },
-      { value: settings.stats_support, label: "Support" },
-    ],
   };
 
   return (
     <>
       <HeroSection content={heroContent} />
-      <GigsSection />
+      <GigsSection settings={{ title: settings.services_title, subtitle: settings.services_subtitle }} />
       <WhyUsSection />
       <OrderSection />
     </>

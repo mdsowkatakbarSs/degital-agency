@@ -3,7 +3,6 @@ import Link from "next/link";
 import { LogOut, Megaphone, Package, Settings } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { OrdersTable } from "@/components/orders-table";
-import { StatsCards } from "@/components/stats-cards";
 import { Button } from "@/components/ui/button";
 import { logout } from "./logout-action";
 
@@ -66,11 +65,7 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        <StatsCards orders={orders || []} />
-
-        <div className="mt-8">
-          <OrdersTable orders={orders || []} />
-        </div>
+        <OrdersTable orders={orders || []} />
   </div>
     </div>
   );

@@ -11,7 +11,6 @@ export interface HeroContent {
   title: string;
   subtitle: string;
   description: string;
-  stats: { value: string; label: string }[];
 }
 
 export const DEFAULT_HERO: HeroContent = {
@@ -21,12 +20,6 @@ export const DEFAULT_HERO: HeroContent = {
     "Your Trusted Partner For Social Media Growth & Monetization Services",
   description:
     "We provide professional solutions to help creators, influencers, businesses & brands grow their online presence across the world's leading social media platforms.",
-  stats: [
-    { value: "4", label: "Major Platforms" },
-    { value: "6+", label: "Growth Services" },
-    { value: "100%", label: "Safe Methods" },
-    { value: "24/7", label: "Support" },
-  ],
 };
 
 export function HeroSection({ content = DEFAULT_HERO }: { content?: HeroContent }) {
@@ -93,19 +86,6 @@ export function HeroSection({ content = DEFAULT_HERO }: { content?: HeroContent 
             </Button>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto"
-          >
-            {content.stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-foreground">{stat.value}</div>
-                <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
-              </div>
-            ))}
-          </motion.div>
         </div>
 
         {/* Floating Platform Icons */}

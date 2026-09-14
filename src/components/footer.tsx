@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Mail, MapPin, Star } from "lucide-react";
-import { CONTACT_INFO, SITE_CONFIG, SERVICE_GROUPS } from "@/lib/constants";
+import { SITE_CONFIG, SERVICE_GROUPS } from "@/lib/constants";
 import { PaymentPartners } from "@/components/payment-methods";
+import type { SiteSettings } from "@/lib/announcement-types";
+import { DEFAULT_SETTINGS } from "@/lib/announcement-types";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -11,8 +13,9 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-export function Footer({ tagline }: { tagline?: string }) {
-  const displayTagline = tagline || "Grow Faster. Reach Further. Monetize Smarter.";
+export function Footer({ settings }: { settings?: SiteSettings }) {
+  const s = settings || DEFAULT_SETTINGS;
+  const displayTagline = s.footer_tagline;
   return (
     <footer className="border-t border-border/50 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -33,10 +36,10 @@ export function Footer({ tagline }: { tagline?: string }) {
               <li className="flex items-center gap-2 min-w-0">
                 <Mail className="w-4 h-4 shrink-0 text-primary" />
                 <a
-                  href={`mailto:${CONTACT_INFO.email}`}
+                  href={`mailto:${s.contact_email}`}
                   className="hover:text-foreground transition-colors truncate"
                 >
-                  {CONTACT_INFO.email}
+                  {s.contact_email}
                 </a>
               </li>
               <li className="flex items-center gap-2">
@@ -44,17 +47,17 @@ export function Footer({ tagline }: { tagline?: string }) {
                   <WhatsAppIcon className="w-4 h-4" />
                 </span>
                 <a
-                  href={CONTACT_INFO.whatsappLink}
+                  href={`https://wa.me/${s.contact_whatsapp.replace(/[^0-9]/g, "")}?text=Hi%2C%20I%27m%20interested%20in%20your%20social%20media%20growth%20services.`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-foreground transition-colors"
                 >
-                  WhatsApp: {CONTACT_INFO.whatsapp}
+                  WhatsApp: {s.contact_whatsapp}
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 shrink-0 text-primary" />
-                <span>Service Country: {CONTACT_INFO.serviceCountry}</span>
+                <span>Service Country: {s.service_country}</span>
               </li>
             </ul>
           </div>

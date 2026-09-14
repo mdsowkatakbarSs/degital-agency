@@ -23,7 +23,6 @@ import {
   formatDeliveryDays,
   TIER_LABELS,
 } from "@/lib/gigs";
-
 const TIER_COLORS: Record<string, string> = {
   basic: "border-blue-500/50 bg-blue-500/5",
   standard: "border-yellow-500/50 bg-yellow-500/5",
@@ -153,6 +152,20 @@ export default function GigDetailPage() {
   }
 
   const color = PLATFORM_COLORS[gig.platform] || "#888";
+  const packageCount = sortedPackages.length;
+  const packageGridClass =
+    packageCount === 1
+      ? ""
+      : packageCount === 2
+        ? "grid sm:grid-cols-2 gap-4"
+        : packageCount === 3
+          ? "grid gap-4"
+          : packageCount === 4
+            ? "grid sm:grid-cols-2 gap-4"
+            : "grid grid-cols-2 lg:grid-cols-3 gap-4";
+  // With 4+ packages, the picker grid lives in the main column (full width);
+  // the sidebar just shows the currently selected package.
+  const showGridInMain = packageCount >= 4;
 
   return (
     <div className="min-h-screen pt-24 pb-32 lg:pb-12 px-4 sm:px-6 lg:px-8">
@@ -235,6 +248,85 @@ export default function GigDetailPage() {
               </div>
             </div>
 
+            {/* Package Grid — full-width main column for large catalogs */}
+            {showGridInMain && (
+              <div>
+                <h2 className="text-lg font-semibold mb-4">Choose a package</h2>
+                <div className={packageGridClass}>
+                  {sortedPackages.map((pkg) => {
+                    const isSelected = activeTier === pkg.tier;
+                    const features: string[] = Array.isArray(pkg.features)
+                      ? pkg.features
+                      : [];
+                    return (
+                      <motion.button
+                        key={pkg.tier}
+                        onClick={() => setSelectedTier(pkg.tier)}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        className={`w-full text-left p-4 sm:p-5 rounded-2xl border-2 transition-all duration-200 ${
+                          isSelected
+                            ? "shadow-md bg-background"
+                            : "border-border/50 bg-background hover:border-border"
+                        }`}
+                        style={isSelected ? { borderColor: color } : undefined}
+                      >
+                        {pkg.image_url ? (
+                          <div className="relative aspect-video rounded-xl overflow-hidden mb-3 bg-muted/30">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={pkg.image_url}
+                              alt={pkg.name}
+                              className="w-full h-full object-cover"
+                            />
+                            {isSelected && (
+                              <div
+                                className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center"
+                                style={{ backgroundColor: color }}
+                              >
+                                <Check className="w-3 h-3 text-white" />
+                              </div>
+                            )}
+                          </div>
+                        ) : null}
+                        <div className="flex items-center justify-between mb-2 gap-2">
+                          <span className="font-semibold text-sm sm:text-base">{pkg.name}</span>
+                          {isSelected && !pkg.image_url && (
+                            <div
+                              className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                              style={{ backgroundColor: color }}
+                            >
+                              <Check className="w-3 h-3 text-white" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="mb-1">
+                          <span className="text-xl sm:text-2xl font-bold">
+                            {formatPrice(pkg.price)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
+                          <Clock className="w-3.5 h-3.5" />
+                          {formatDeliveryDays(pkg.delivery_days)} delivery
+                        </div>
+                        <ul className="space-y-1.5">
+                          {features.map((feature, i) => (
+                            <li
+                              key={i}
+                              className="flex items-start gap-2 text-xs sm:text-sm text-muted-foreground"
+                            >
+                              <Check className="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" />
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Trust Badges */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
@@ -280,14 +372,44 @@ export default function GigDetailPage() {
             className="lg:col-span-1"
           >
             <div className="lg:sticky lg:top-28 space-y-4">
-              <h2 className="text-lg font-semibold">
-                {isSinglePackage ? "What you get" : "Choose a package"}
-              </h2>
-
-              {isSinglePackage && sortedPackages[0] ? (
-                <SinglePackageCard pkg={sortedPackages[0]} color={color} />
+              {isSinglePackage ? (
+                <>
+                  <h2 className="text-lg font-semibold">What you get</h2>
+                  <SinglePackageCard pkg={sortedPackages[0]} color={color} />
+                </>
+              ) : showGridInMain ? (
+                <>
+                  <h2 className="text-lg font-semibold">Your selection</h2>
+                  {selectedPackage ? (
+                    <div className="p-5 rounded-2xl border-2 bg-background" style={{ borderColor: color }}>
+                      <div className="flex items-center justify-between mb-2 gap-2">
+                        <span className="font-semibold">{selectedPackage.name}</span>
+                        <span className="text-2xl font-bold">
+                          {formatPrice(selectedPackage.price)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground mb-4">
+                        <Clock className="w-3.5 h-3.5" />
+                        {formatDeliveryDays(selectedPackage.delivery_days)} delivery
+                      </div>
+                      <ul className="space-y-1.5">
+                        {(Array.isArray(selectedPackage.features) ? selectedPackage.features : []).map(
+                          (feature, i) => (
+                            <li key={i} className="flex items-start gap-2 text-xs sm:text-sm text-muted-foreground">
+                              <Check className="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" />
+                              {feature}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  ) : null}
+                </>
               ) : (
-                sortedPackages.map((pkg) => {
+                <>
+                  <h2 className="text-lg font-semibold">Choose a package</h2>
+                  <div className="grid gap-4">
+                    {sortedPackages.map((pkg) => {
                   const isSelected = activeTier === pkg.tier;
                   const features: string[] = Array.isArray(pkg.features)
                     ? pkg.features
@@ -299,11 +421,11 @@ export default function GigDetailPage() {
                       onClick={() => setSelectedTier(pkg.tier)}
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
-                      className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 ${
-                        isSelected
-                          ? `${TIER_COLORS[pkg.tier]} border-current shadow-md`
-                          : "border-border/50 bg-background hover:border-border"
-                      }`}
+                        className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 ${
+                          isSelected
+                            ? `${TIER_COLORS[pkg.tier] || ""} border-current shadow-md`
+                            : "border-border/50 bg-background hover:border-border"
+                        }`}
                       style={
                         isSelected ? { borderColor: color } : undefined
                       }
@@ -311,9 +433,11 @@ export default function GigDetailPage() {
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <span
-                            className={`text-xs font-medium px-2 py-0.5 rounded-full ${TIER_BADGE_COLORS[pkg.tier]}`}
+                            className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                              TIER_BADGE_COLORS[pkg.tier] || "bg-muted text-muted-foreground"
+                            }`}
                           >
-                            {TIER_LABELS[pkg.tier]}
+                            {pkg.name || TIER_LABELS[pkg.tier]}
                           </span>
                           <span className="font-semibold">{pkg.name}</span>
                         </div>
@@ -327,11 +451,11 @@ export default function GigDetailPage() {
                         )}
                       </div>
 
-                      <div className="mb-3">
-                        <span className="text-2xl font-bold">
-                          {formatPrice(pkg.price)}
-                        </span>
-                      </div>
+                        <div className="mb-3">
+                          <span className="text-xl sm:text-2xl font-bold">
+                            {formatPrice(pkg.price)}
+                          </span>
+                        </div>
 
                       <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
                         <Clock className="w-3.5 h-3.5" />
@@ -351,7 +475,9 @@ export default function GigDetailPage() {
                       </ul>
                     </motion.button>
                   );
-                })
+                })}
+                  </div>
+                </>
               )}
 
               {/* Continue Button — Desktop */}

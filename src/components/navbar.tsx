@@ -23,7 +23,11 @@ const navLinks = [
   { href: "#order", label: "Order" },
 ];
 
-export function Navbar() {
+export function Navbar({
+  whatsapp,
+}: {
+  whatsapp?: { number: string; link: string };
+} = {}) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -74,7 +78,7 @@ export function Navbar() {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <a
-              href={CONTACT_INFO.whatsappLink}
+              href={whatsapp?.link || CONTACT_INFO.whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Chat with us on WhatsApp"
@@ -121,13 +125,13 @@ export function Navbar() {
                     </Link>
                   </Button>
                   <a
-                    href={CONTACT_INFO.whatsappLink}
+                    href={whatsapp?.link || CONTACT_INFO.whatsappLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full rounded-full border border-[#25D366]/40 text-[#25D366] h-10 text-sm font-medium hover:bg-[#25D366]/10 transition-colors"
                   >
                     <WhatsAppIcon className="w-4 h-4" />
-                    WhatsApp: {CONTACT_INFO.whatsapp}
+                    WhatsApp: {whatsapp?.number || CONTACT_INFO.whatsapp}
                   </a>
                 </div>
               </SheetContent>

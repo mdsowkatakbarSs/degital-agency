@@ -17,12 +17,13 @@ export interface Gig {
 export interface GigPackage {
   id: string;
   gig_id: string;
-  tier: "basic" | "standard" | "premium";
+  tier: string;
   name: string;
   price: number;
   delivery_days: number;
   features: string[];
   sort_order: number;
+  image_url?: string;
 }
 
 export interface GigWithPackages extends Gig {
@@ -48,6 +49,12 @@ export const TIER_LABELS: Record<string, string> = {
   standard: "Standard",
   premium: "Premium",
 };
+
+/** Human label for a package: prefer its own name, then known tiers, then the raw tier. */
+export function tierLabel(tier: string, name?: string): string {
+  if (name && name.trim()) return name;
+  return TIER_LABELS[tier] || tier;
+}
 
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat("en-US", {

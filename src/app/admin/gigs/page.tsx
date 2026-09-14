@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2, Package, Plus, Save, Trash2 } from "lucide-react";
+import { ArrowLeft, ImagePlus, Loader2, Package, Plus, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -115,6 +115,36 @@ export default function AdminGigsPage() {
       .replace(/(^-|-$)/g, "");
   }
 
+  function addPackage() {
+    if (!editingGig) return;
+    const nextSort = editingGig.gig_packages.length;
+    setEditingGig({
+      ...editingGig,
+      gig_packages: [
+        ...editingGig.gig_packages,
+        {
+          id: "",
+          gig_id: editingGig.id,
+          tier: `tier-${nextSort + 1}`,
+          name: `Package ${nextSort + 1}`,
+          price: 9.99,
+          delivery_days: 3,
+          features: ["Standard delivery"],
+          sort_order: nextSort,
+          image_url: "",
+        },
+      ],
+    });
+  }
+
+  function removePackage(index: number) {
+    if (!editingGig) return;
+    setEditingGig({
+      ...editingGig,
+      gig_packages: editingGig.gig_packages.filter((_, i) => i !== index),
+    });
+  }
+
   async function saveGig() {
     if (!editingGig) return;
 
@@ -157,10 +187,13 @@ export default function AdminGigsPage() {
           await supabase
             .from("gig_packages")
             .update({
+              tier: pkg.tier,
+              name: pkg.name,
               price: pkg.price,
               delivery_days: pkg.delivery_days,
               features: pkg.features,
               sort_order: pkg.sort_order,
+              image_url: pkg.image_url || "",
             })
             .eq("id", pkg.id);
         } else {
@@ -172,6 +205,7 @@ export default function AdminGigsPage() {
             delivery_days: pkg.delivery_days,
             features: pkg.features,
             sort_order: pkg.sort_order,
+            image_url: pkg.image_url || "",
           });
         }
       }
@@ -201,6 +235,7 @@ export default function AdminGigsPage() {
           delivery_days: pkg.delivery_days,
           features: pkg.features,
           sort_order: pkg.sort_order,
+          image_url: pkg.image_url || "",
         });
       }
 
@@ -487,27 +522,75 @@ export default function AdminGigsPage() {
 
                 {/* Packages */}
                 <div className="space-y-4">
-                  <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
-                    Packages
-                  </h4>
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
+                      Packages ({editingGig.gig_packages.length})
+                    </h4>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addPackage}
+                      className="gap-1 h-8"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      Add Package
+                    </Button>
+                  </div>
                   {editingGig.gig_packages.map((pkg, i) => (
-                    <Card key={pkg.tier} className="border-dashed">
+                    <Card key={pkg.id || `new-${i}`} className="border-dashed">
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                          <span
-                            className={`w-2 h-2 rounded-full ${
-                              pkg.tier === "basic"
-                                ? "bg-blue-500"
-                                : pkg.tier === "standard"
-                                ? "bg-yellow-500"
-                                : "bg-purple-500"
-                            }`}
-                          />
-                          {pkg.name} ({pkg.tier})
+                        <CardTitle className="text-sm flex items-center justify-between gap-2">
+                          <span className="flex items-center gap-2 min-w-0">
+                            <span
+                              className={`w-2 h-2 rounded-full shrink-0 ${
+                                pkg.tier === "basic"
+                                  ? "bg-blue-500"
+                                  : pkg.tier === "standard"
+                                  ? "bg-yellow-500"
+                                  : pkg.tier === "premium"
+                                  ? "bg-purple-500"
+                                  : "bg-primary"
+                              }`}
+                            />
+                            <span className="truncate">Package {i + 1}</span>
+                          </span>
+                          {editingGig.gig_packages.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removePackage(i)}
+                              className="h-7 px-2 text-destructive hover:text-destructive gap-1 shrink-0"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                              Remove
+                            </Button>
+                          )}
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-3">
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          <div className="space-y-1">
+                            <Label className="text-xs">Name</Label>
+                            <Input
+                              value={pkg.name}
+                              onChange={(e) => updatePackage(i, "name", e.target.value)}
+                              placeholder="e.g. 1K Views"
+                              className="h-8"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs">Tier tag</Label>
+                            <Input
+                              value={pkg.tier}
+                              onChange={(e) =>
+                                updatePackage(i, "tier", e.target.value.trim().toLowerCase())
+                              }
+                              placeholder="basic / views-1k"
+                              className="h-8"
+                            />
+                          </div>
                           <div className="space-y-1">
                             <Label className="text-xs">Price ($)</Label>
                             <Input
@@ -533,6 +616,18 @@ export default function AdminGigsPage() {
                               className="h-8"
                             />
                           </div>
+                        </div>
+                        <div className="space-y-1">
+                          <Label className="text-xs flex items-center gap-1">
+                            <ImagePlus className="w-3 h-3" />
+                            Package image URL (optional)
+                          </Label>
+                          <Input
+                            value={pkg.image_url || ""}
+                            onChange={(e) => updatePackage(i, "image_url", e.target.value)}
+                            placeholder="/gigs/views-1k.jpg or https://..."
+                            className="h-8"
+                          />
                         </div>
                         <div className="space-y-1">
                           <Label className="text-xs">Features (one per line)</Label>

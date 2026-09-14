@@ -32,7 +32,11 @@ function GigCardSkeleton() {
   );
 }
 
-export function GigsSection() {
+export function GigsSection({
+  settings,
+}: {
+  settings?: { title?: string; subtitle?: string };
+} = {}) {
   const [gigs, setGigs] = useState<GigWithPackages[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
@@ -65,10 +69,11 @@ export function GigsSection() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4"
           >
-            Our Services
+            {settings?.title || "Our Services"}
           </motion.h2>
           <p className="text-lg text-muted-foreground">
-            Professional growth &amp; monetization solutions for every major platform.
+            {settings?.subtitle ||
+              "Professional growth & monetization solutions for every major platform."}
           </p>
         </div>
 
