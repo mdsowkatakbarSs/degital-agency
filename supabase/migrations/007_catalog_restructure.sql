@@ -40,6 +40,19 @@ END $$;
 -- ---------- 5. Per-package image ----------
 ALTER TABLE gig_packages ADD COLUMN IF NOT EXISTS image_url text NOT NULL DEFAULT '';
 
+-- Attach package images to the YouTube Views packages (idempotent)
+UPDATE gig_packages gp
+SET image_url = m.img
+FROM (VALUES
+  ('views-1k',   '/gigs/views-1k.jpg'),
+  ('views-5k',   '/gigs/views-5k.jpg'),
+  ('views-10k',  '/gigs/views-10k.jpg'),
+  ('views-50k',  '/gigs/views-50k.jpg'),
+  ('views-100k', '/gigs/views-100k.jpg')
+) AS m(tier, img)
+JOIN gigs g ON g.slug = 'youtube-views'
+WHERE gp.gig_id = g.id AND gp.tier = m.tier;
+
 -- ---------- 6. YouTube Views gig with 5 packages ----------
 INSERT INTO gigs (slug, platform, title, short_description, full_description, cover_image_url, starting_price, delivery_days, is_active, sort_order)
 VALUES (
@@ -52,15 +65,15 @@ VALUES (
 ON CONFLICT (slug) DO NOTHING;
 
 INSERT INTO gig_packages (gig_id, tier, name, price, delivery_days, features, sort_order, image_url)
-SELECT g.id, v.tier, v.name, v.price, v.days, v.features::jsonb, v.ord, ''
+SELECT g.id, v.tier, v.name, v.price, v.days, v.features::jsonb, v.ord, v.img
 FROM gigs g
 JOIN (VALUES
-  ('views-1k',   '1K Views',   3.00,  1, '["1,000 high-retention views","Fast start within hours","Safe & natural delivery","Works on any video or Short"]', 0),
-  ('views-5k',   '5K Views',   12.00, 2, '["5,000 high-retention views","Boosts algorithmic reach","Gradual natural delivery","Works on any video or Short"]', 1),
-  ('views-10k',  '10K Views',  22.00, 3, '["10,000 high-retention views","Strong algorithm push","Gradual natural delivery","Priority support"]', 2),
-  ('views-50k',  '50K Views',  90.00, 5, '["50,000 high-retention views","Maximum reach & social proof","Drip-feed delivery over days","Priority support"]', 3),
-  ('views-100k', '100K Views', 160.00, 7, '["100,000 high-retention views","Viral-level visibility","Drip-feed + gradual ramp","Dedicated priority support"]', 4)
-) AS v(tier, name, price, days, features, ord)
+  ('views-1k',   '1K Views',   3.00,  1, '["1,000 high-retention views","Fast start within hours","Safe & natural delivery","Works on any video or Short"]', 0, '/gigs/views-1k.jpg'),
+  ('views-5k',   '5K Views',   12.00, 2, '["5,000 high-retention views","Boosts algorithmic reach","Gradual natural delivery","Works on any video or Short"]', 1, '/gigs/views-5k.jpg'),
+  ('views-10k',  '10K Views',  22.00, 3, '["10,000 high-retention views","Strong algorithm push","Gradual natural delivery","Priority support"]', 2, '/gigs/views-10k.jpg'),
+  ('views-50k',  '50K Views',  90.00, 5, '["50,000 high-retention views","Maximum reach & social proof","Drip-feed delivery over days","Priority support"]', 3, '/gigs/views-50k.jpg'),
+  ('views-100k', '100K Views', 160.00, 7, '["100,000 high-retention views","Viral-level visibility","Drip-feed + gradual ramp","Dedicated priority support"]', 4, '/gigs/views-100k.jpg')
+) AS v(tier, name, price, days, features, ord, img)
   ON g.slug = 'youtube-views'
 WHERE NOT EXISTS (
   SELECT 1 FROM gig_packages gp WHERE gp.gig_id = g.id AND gp.tier = v.tier
