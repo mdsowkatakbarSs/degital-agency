@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { ImageUpload } from "@/components/image-upload";
 import {
   Card,
   CardContent,
@@ -359,31 +360,14 @@ export default function AdminSettingsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>CashApp QR image URL</Label>
-                <Input
+                <Label>CashApp QR image</Label>
+                <ImageUpload
                   value={form.payment_cashapp_qr}
-                  onChange={(e) =>
-                    update("payment_cashapp_qr", e.target.value)
-                  }
+                  onChange={(url) => update("payment_cashapp_qr", url)}
+                  folder="qrcodes"
                   placeholder="/payments/cashapp-qr.jpg"
+                  small
                 />
-                {form.payment_cashapp_qr ? (
-                  <div className="mt-1 flex items-center gap-3">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={form.payment_cashapp_qr}
-                      alt="QR preview"
-                      className="w-16 h-16 rounded-lg border object-cover"
-                    />
-                    <span className="text-xs text-muted-foreground">
-                      QR preview
-                    </span>
-                  </div>
-                ) : null}
-                <p className="text-xs text-muted-foreground">
-                  To upload a new QR: add the image to the repo
-                  (public/payments/) or paste any public image URL.
-                </p>
               </div>
             </CardContent>
           </Card>

@@ -29,9 +29,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  type Gig,
+} from "@/components/ui/dialog";import { ImageUpload } from "@/components/image-upload";
+import { type Gig,
   type GigPackage,
   PLATFORMS,
   PLATFORM_LABELS,
@@ -505,15 +504,13 @@ export default function AdminGigsPage() {
                       />
                     </div>
                     <div className="space-y-2 col-span-2">
-                      <Label>Cover Image URL (optional)</Label>
-                      <Input
+                      <Label>Cover Image (optional)</Label>
+                      <ImageUpload
                         value={editingGig.cover_image_url}
-                        onChange={(e) =>
-                          setEditingGig({
-                            ...editingGig,
-                            cover_image_url: e.target.value,
-                          })
+                        onChange={(url) =>
+                          setEditingGig({ ...editingGig, cover_image_url: url })
                         }
+                        folder="covers"
                         placeholder="https://..."
                       />
                     </div>
@@ -620,13 +617,14 @@ export default function AdminGigsPage() {
                         <div className="space-y-1">
                           <Label className="text-xs flex items-center gap-1">
                             <ImagePlus className="w-3 h-3" />
-                            Package image URL (optional)
+                            Package image (optional)
                           </Label>
-                          <Input
+                          <ImageUpload
                             value={pkg.image_url || ""}
-                            onChange={(e) => updatePackage(i, "image_url", e.target.value)}
+                            onChange={(url) => updatePackage(i, "image_url", url)}
+                            folder="packages"
                             placeholder="/gigs/views-1k.jpg or https://..."
-                            className="h-8"
+                            small
                           />
                         </div>
                         <div className="space-y-1">
