@@ -21,8 +21,8 @@ export default async function Home() {
     <>
       <HeroSection content={heroContent} />
       <GigsSection settings={{ title: settings.services_title, subtitle: settings.services_subtitle }} />
-      <WhyUsSection />
-      <OrderSection />
+      <WhyUsSection settings={settings} />
+      <OrderSection settings={settings} />
     </>
   );
 }

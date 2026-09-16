@@ -10,7 +10,8 @@ import {
   Headset,
 } from "lucide-react";
 import { SectionWrapper } from "@/components/section-wrapper";
-import { WHY_US } from "@/lib/constants";
+import type { SiteSettings, WhyUsFeature } from "@/lib/announcement-types";
+import { DEFAULT_SETTINGS } from "@/lib/announcement-types";
 
 const iconMap: Record<string, React.ElementType> = {
   TrendingUp,
@@ -21,22 +22,25 @@ const iconMap: Record<string, React.ElementType> = {
   Headset,
 };
 
-export function WhyUsSection() {
+export function WhyUsSection({ settings }: { settings?: SiteSettings }) {
+  const s = settings || DEFAULT_SETTINGS;
+  const features = s.why_us_features || DEFAULT_SETTINGS.why_us_features;
+
   return (
     <SectionWrapper id="why-us" className="bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-            Why Choose Us
+            {s.why_us_title || "Why Choose Us"}
           </motion.h2>
           <p className="text-lg text-muted-foreground">
-            Trusted service, safe methods and support you can rely on.
+            {s.why_us_subtitle || "Trusted service, safe methods and support you can rely on."}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {WHY_US.map((feature, index) => {
-            const Icon = iconMap[feature.icon];
+          {features.map((feature: WhyUsFeature, index: number) => {
+            const Icon = iconMap[feature.icon] || TrendingUp;
             return (
               <motion.div
                 key={feature.title}

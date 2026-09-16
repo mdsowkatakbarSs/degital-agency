@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Mail, MapPin, Star } from "lucide-react";
-import { SITE_CONFIG, SERVICE_GROUPS } from "@/lib/constants";
 import { PaymentPartners } from "@/components/payment-methods";
 import type { SiteSettings } from "@/lib/announcement-types";
 import { DEFAULT_SETTINGS } from "@/lib/announcement-types";
@@ -13,24 +12,33 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
+const PLATFORMS = ["YouTube", "Facebook", "Instagram", "TikTok"];
+
 export function Footer({ settings }: { settings?: SiteSettings }) {
   const s = settings || DEFAULT_SETTINGS;
   const displayTagline = s.footer_tagline;
+  const siteName = s.site_name || "ytgrowthgear.shop";
+  const siteDescription = s.site_description || DEFAULT_SETTINGS.site_description;
+  const popularServices = s.footer_popular_services || DEFAULT_SETTINGS.footer_popular_services;
+  const whatsappNumber = s.contact_whatsapp || DEFAULT_SETTINGS.contact_whatsapp;
+  const whatsappLink = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=Hi%2C%20I%27m%20interested%20in%20your%20social%20media%20growth%20services.`;
+
   return (
     <footer className="border-t border-border/50 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Column 1: Brand + Contact */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shrink-0">
                 <Star className="w-4 h-4 text-primary-foreground fill-primary-foreground" />
               </div>
               <span className="font-bold text-base leading-tight">
-                {SITE_CONFIG.name}
+                {siteName}
               </span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              {SITE_CONFIG.description}
+              {siteDescription}
             </p>
             <ul className="space-y-2.5 text-sm text-muted-foreground">
               <li className="flex items-center gap-2 min-w-0">
@@ -47,12 +55,12 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                   <WhatsAppIcon className="w-4 h-4" />
                 </span>
                 <a
-                  href={`https://wa.me/${s.contact_whatsapp.replace(/[^0-9]/g, "")}?text=Hi%2C%20I%27m%20interested%20in%20your%20social%20media%20growth%20services.`}
+                  href={whatsappLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-foreground transition-colors"
                 >
-                  WhatsApp: {s.contact_whatsapp}
+                  WhatsApp: {whatsappNumber}
                 </a>
               </li>
               <li className="flex items-center gap-2">
@@ -62,8 +70,9 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
             </ul>
           </div>
 
+          {/* Column 2: Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4">Quick Links</h4>
+            <h4 className="font-semibold mb-4">{s.footer_quick_links_title}</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
               {[
                 { href: "#services", label: "Services" },
@@ -80,29 +89,25 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
             </ul>
           </div>
 
+          {/* Column 3: Platform Services */}
           <div>
-            <h4 className="font-semibold mb-4">Platform Services</h4>
+            <h4 className="font-semibold mb-4">{s.footer_platforms_title}</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
-              {SERVICE_GROUPS.map((group) => (
-                <li key={group.platform}>
+              {PLATFORMS.map((platform) => (
+                <li key={platform}>
                   <Link href="#services" className="hover:text-foreground transition-colors">
-                    {group.platform} Growth &amp; Monetization
+                    {platform} Growth &amp; Monetization
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* Column 4: Popular Services */}
           <div>
-            <h4 className="font-semibold mb-4">Popular Services</h4>
+            <h4 className="font-semibold mb-4">{s.footer_popular_title}</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
-              {[
-                "YouTube Monetization Package",
-                "Facebook Monetization Package",
-                "YouTube Watch Time",
-                "Instagram Followers",
-                "TikTok Followers",
-              ].map((item) => (
+              {popularServices.map((item: string) => (
                 <li key={item}>
                   <Link href="#order" className="hover:text-foreground transition-colors">
                     {item}
@@ -120,7 +125,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
           </div>
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
             <p>
-              © {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.
+              © {new Date().getFullYear()} {siteName}. All rights reserved.
             </p>
             <p>{displayTagline}</p>
           </div>

@@ -7,7 +7,8 @@ import { Menu, Moon, Star, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { CONTACT_INFO, SITE_CONFIG } from "@/lib/constants";
+import type { SiteSettings } from "@/lib/announcement-types";
+import { DEFAULT_SETTINGS } from "@/lib/announcement-types";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -23,68 +24,61 @@ const navLinks = [
   { href: "#order", label: "Order" },
 ];
 
-export function Navbar({
-  whatsapp,
-}: {
-  whatsapp?: { number: string; link: string };
-} = {}) {
+export function Navbar({ settings }: { settings?: SiteSettings } = {}) {
+  const s = settings || DEFAULT_SETTINGS;
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const whatsappNumber = s.contact_whatsapp || DEFAULT_SETTINGS.contact_whatsapp;
+  const whatsappLink = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=Hi%2C%20I%27m%20interested%20in%20your%20social%20media%20growth%20services.`;
 
   return (
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm"
+          ? "bg-background/80 backdrop-blur-lg border-b border-border/50 shadow-sm"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
               <Star className="w-4 h-4 text-primary-foreground fill-primary-foreground" />
             </div>
-            <span className="font-bold tracking-tight hidden md:inline text-base lg:text-lg">
-              {SITE_CONFIG.name}
-            </span>
-            <span className="font-bold tracking-tight md:hidden text-sm">
-              YT GrowthGear
+            <span className="font-bold text-base leading-tight hidden sm:block">
+              {s.site_name || "ytgrowthgear.shop"}
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-8">
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
               </Link>
             ))}
-          </nav>
-
-          <div className="flex items-center gap-2 sm:gap-3">
             <a
-              href={whatsapp?.link || CONTACT_INFO.whatsappLink}
+              href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Chat with us on WhatsApp"
-              className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-colors"
+              className="flex items-center gap-1.5 text-sm font-medium text-[#25D366] hover:opacity-80 transition-opacity"
             >
               <WhatsAppIcon className="w-4 h-4" />
+              WhatsApp
             </a>
             <Button
               variant="ghost"
@@ -92,51 +86,62 @@ export function Navbar({
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="rounded-full"
             >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <Sun className="h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <Moon className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <span className="sr-only">Toggle theme</span>
             </Button>
-
-            <Button asChild className="hidden sm:inline-flex rounded-full px-6">
-              <Link href="#order">Order Now</Link>
+            <Button asChild size="sm" className="rounded-full">
+              <Link href="/#order">Order Now</Link>
             </Button>
+          </nav>
 
-            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-              <SheetTrigger asChild className="lg:hidden">
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-full sm:w-80">
-                <div className="flex flex-col gap-6 mt-8">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setMobileOpen(false)}
-                      className="text-lg font-medium hover:text-primary transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                  <Button asChild className="w-full rounded-full mt-4">
-                    <Link href="#order" onClick={() => setMobileOpen(false)}>
-                      Order Now
-                    </Link>
-                  </Button>
-                  <a
-                    href={whatsapp?.link || CONTACT_INFO.whatsappLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full rounded-full border border-[#25D366]/40 text-[#25D366] h-10 text-sm font-medium hover:bg-[#25D366]/10 transition-colors"
+          {/* Mobile hamburger */}
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden rounded-full">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-72">
+              <div className="flex flex-col gap-4 mt-8">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="text-lg font-medium hover:text-foreground transition-colors"
                   >
-                    <WhatsAppIcon className="w-4 h-4" />
-                    WhatsApp: {whatsapp?.number || CONTACT_INFO.whatsapp}
-                  </a>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+                    {link.label}
+                  </Link>
+                ))}
+                <a
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-lg font-medium text-[#25D366]"
+                >
+                  <WhatsAppIcon className="w-5 h-5" />
+                  WhatsApp
+                </a>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="rounded-full w-fit"
+                >
+                  <Sun className="h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <Moon className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+                <Button asChild size="lg" className="rounded-full mt-4">
+                  <Link href="/#order" onClick={() => setMobileOpen(false)}>
+                    Order Now
+                  </Link>
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </motion.header>

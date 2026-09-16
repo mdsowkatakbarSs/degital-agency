@@ -83,12 +83,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             {settings.announcement_enabled && announcements.length > 0 && (
               <AnnouncementBanner announcements={announcements} />
             )}
-            <Navbar
-              whatsapp={{
-                number: settings.contact_whatsapp,
-                link: `https://wa.me/${settings.contact_whatsapp.replace(/[^0-9]/g, "")}?text=Hi%2C%20I%27m%20interested%20in%20your%20social%20media%20growth%20services.`,
-              }}
-            />
+            <Navbar settings={settings} />
             <main className="flex-1">{children}</main>
             {settings.ticker_enabled && (
               <ActivityTicker items={settings.activity_feed} />
