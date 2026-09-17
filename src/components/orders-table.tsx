@@ -162,7 +162,7 @@ export function OrdersTable({ orders: initialOrders }: { orders: OrderRow[] }) {
       </motion.div>
 
       <Dialog open={!!viewingOrder} onOpenChange={(open) => !open && setViewingOrder(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="text-left">
               Payment screenshot — {viewingOrder?.name}

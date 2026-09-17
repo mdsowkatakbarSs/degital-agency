@@ -280,7 +280,7 @@ export default function AdminAnnouncementsPage() {
 
         {/* Edit / Create Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {editing?.id ? "Edit Announcement" : "New Announcement"}

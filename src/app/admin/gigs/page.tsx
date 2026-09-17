@@ -388,7 +388,7 @@ export default function AdminGigsPage() {
 
         {/* Edit / Create Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {editingGig?.id ? "Edit Gig" : "New Gig"}
