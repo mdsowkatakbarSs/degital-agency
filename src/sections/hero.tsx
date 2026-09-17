@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Rocket, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PlatformIcon } from "@/components/platform-icon";
 
 export interface HeroContent {
   badge: string;
@@ -12,6 +13,16 @@ export interface HeroContent {
   subtitle: string;
   description: string;
 }
+
+// Platform trust chips shown under the hero CTAs (icon in brand color).
+// TikTok's brand color is black, which is invisible in dark mode — use the
+// theme foreground for its icon instead.
+const PLATFORM_CHIPS = [
+  { name: "YouTube", color: "#FF0000" },
+  { name: "Facebook", color: "#1877F2" },
+  { name: "Instagram", color: "#E4405F" },
+  { name: "TikTok", color: "var(--foreground)" },
+];
 
 export const DEFAULT_HERO: HeroContent = {
   badge: "Welcome To Our Platform",
@@ -42,7 +53,7 @@ export function HeroSection({ content = DEFAULT_HERO }: { content?: HeroContent 
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-4 sm:mb-6 break-words text-balance"
+            transition={{ duration: 0.6, delay: 0.1 }}            className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-4 sm:mb-6 break-words text-balance"
           >
             <span className="gradient-text animate-gradient-shift">
               {content.title}
@@ -84,6 +95,31 @@ export function HeroSection({ content = DEFAULT_HERO }: { content?: HeroContent 
                 <Sparkles className="mr-2 w-5 h-5" />Our Services
               </Link>
             </Button>
+          </motion.div>
+
+          {/* Platform trust chips — staggered entrance + gentle float */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="flex flex-wrap items-center justify-center gap-2.5 mb-4 sm:mb-6"
+          >
+            {PLATFORM_CHIPS.map((p, i) => (
+              <motion.span
+                key={p.name}
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6 + i * 0.1, duration: 0.35 }}
+              >
+                <span
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/60 bg-background/70 backdrop-blur-sm text-xs font-medium animate-float"
+                  style={{ animationDelay: `${1.1 + i * 0.35}s` }}
+                >
+                  <PlatformIcon name={p.name} className="w-3.5 h-3.5" style={{ color: p.color }} />
+                  {p.name}
+                </span>
+              </motion.span>
+            ))}
           </motion.div>
 
         </div>

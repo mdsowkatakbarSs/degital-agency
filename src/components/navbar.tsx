@@ -51,11 +51,11 @@ export function Navbar({ settings }: { settings?: SiteSettings } = {}) {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+          <Link href="/" className="flex items-center gap-2 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shrink-0">
               <Star className="w-4 h-4 text-primary-foreground fill-primary-foreground" />
             </div>
-            <span className="font-bold text-base leading-tight hidden sm:block">
+            <span className="font-bold text-sm sm:text-base leading-tight truncate">
               {s.site_name || "ytgrowthgear.shop"}
             </span>
           </Link>
