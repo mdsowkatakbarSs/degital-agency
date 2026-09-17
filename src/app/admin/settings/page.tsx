@@ -206,14 +206,14 @@ export default function AdminSettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen pt-28 pb-12 px-4 flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
           <Button

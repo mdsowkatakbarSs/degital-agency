@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { AnnouncementBanner } from "@/components/announcement-banner";
+import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
 import { SITE_CONFIG } from "@/lib/constants";
@@ -87,7 +88,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange={false}>
           <div className="relative min-h-screen flex flex-col">
             {settings.announcement_enabled && announcements.length > 0 && (
-              <AnnouncementBanner announcements={announcements} />
+              <SiteHeader>
+                <AnnouncementBanner announcements={announcements} />
+              </SiteHeader>
             )}
             <Navbar settings={settings} />
             <main className="flex-1">{children}</main>

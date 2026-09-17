@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Menu, Moon, Star, Sun } from "lucide-react";
@@ -26,15 +26,8 @@ const navLinks = [
 
 export function Navbar({ settings }: { settings?: SiteSettings } = {}) {
   const s = settings || DEFAULT_SETTINGS;
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const whatsappNumber = s.contact_whatsapp || DEFAULT_SETTINGS.contact_whatsapp;
   const whatsappLink = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=Hi%2C%20I%27m%20interested%20in%20your%20social%20media%20growth%20services.`;
@@ -43,11 +36,7 @@ export function Navbar({ settings }: { settings?: SiteSettings } = {}) {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-background/80 backdrop-blur-lg border-b border-border/50 shadow-sm"
-          : "bg-transparent"
-      }`}
+      className="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-background/80 backdrop-blur-lg border-b border-border/50 shadow-sm"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">

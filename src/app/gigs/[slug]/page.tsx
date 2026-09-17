@@ -118,7 +118,7 @@ export default function GigDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <Skeleton className="h-8 w-32 mb-8" />
           <div className="grid lg:grid-cols-3 gap-8">
@@ -142,7 +142,7 @@ export default function GigDetailPage() {
 
   if (!gig) {
     return (
-      <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen pt-28 pb-12 px-4 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Gig not found</h1>
           <Button onClick={() => router.push("/")} className="rounded-full">
@@ -170,7 +170,7 @@ export default function GigDetailPage() {
   const showGridInMain = packageCount >= 4;
 
   return (
-    <div className="min-h-screen pt-24 pb-32 lg:pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pt-28 pb-32 lg:pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Back button */}
         <motion.div

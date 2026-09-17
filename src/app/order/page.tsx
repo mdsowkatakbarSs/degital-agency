@@ -242,7 +242,7 @@ function OrderPageContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen pt-28 pb-12 px-4 flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
       </div>
     );
@@ -251,7 +251,7 @@ function OrderPageContent() {
   // No gig param — show fallback message
   if (!gigSlug || !gig) {
     return (
-      <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen pt-28 pb-12 px-4 flex items-center justify-center">
         <div className="text-center max-w-md">
           <Package className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
           <h1 className="text-2xl font-bold mb-3">Select a service first</h1>
@@ -302,7 +302,7 @@ function OrderPageContent() {
   );
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         {/* Back button */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
@@ -705,7 +705,7 @@ export default function OrderPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center">
+        <div className="min-h-screen pt-28 pb-12 px-4 flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
         </div>
       }
