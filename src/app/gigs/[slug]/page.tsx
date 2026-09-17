@@ -504,12 +504,12 @@ export default function GigDetailPage() {
         </div>
       </div>
 
-      {/* Sticky Bottom Bar — Mobile */}
+      {/* Sticky Bottom Bar — Mobile (page has pb-32 so content is never covered) */}
       {selectedPackage && (
-        <div className="fixed bottom-0 left-0 right-0 lg:hidden z-50 border-t border-border/50 bg-background/95 backdrop-blur-xl p-4">
+        <div className="fixed bottom-0 left-0 right-0 lg:hidden z-50 border-t border-border/50 bg-background/95 backdrop-blur-xl px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <div className="max-w-lg mx-auto flex items-center justify-between gap-4">
-            <div>
-              <div className="text-sm text-muted-foreground">
+            <div className="min-w-0">
+              <div className="text-sm text-muted-foreground truncate">
                 {selectedPackage.name}
               </div>
               <div className="text-xl font-bold">

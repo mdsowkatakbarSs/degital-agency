@@ -406,7 +406,7 @@ function OrderPageContent() {
                   {packages.length > 1 && (
                     <div className="space-y-2">
                       <Label>Package *</Label>
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         {packages.map((p) => (
                           <button
                             key={p.tier}
@@ -573,7 +573,7 @@ function OrderPageContent() {
                     <div className="p-4 rounded-xl bg-muted/40 border border-border/50 space-y-1.5 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Service</span>
-                        <span className="font-medium truncate max-w-[60%] text-right">
+                        <span className="font-medium truncate min-w-0 max-w-[60%] text-right">
                           {gig.title} — {pkg ? pkg.name : selectedTier}
                         </span>
                       </div>
