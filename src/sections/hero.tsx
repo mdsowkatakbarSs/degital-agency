@@ -24,16 +24,16 @@ export const DEFAULT_HERO: HeroContent = {
 
 export function HeroSection({ content = DEFAULT_HERO }: { content?: HeroContent }) {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section className="relative min-h-svh flex items-center justify-center overflow-hidden pt-20">
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-glow" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: "1s" }} />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center max-w-4xl mx-auto">
+      <div className="relative w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
+        <div className="text-center min-w-0 max-w-4xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <Badge variant="secondary" className="mb-6 px-4 py-1.5 text-sm font-medium rounded-full">
+            <Badge variant="secondary" className="mb-4 sm:mb-6 max-w-full h-auto whitespace-normal text-center px-4 py-1.5 text-sm font-medium rounded-full leading-relaxed">
               <Rocket className="w-3.5 h-3.5 mr-1.5 text-yellow-500" />
               {content.badge}
             </Badge>
@@ -42,7 +42,7 @@ export function HeroSection({ content = DEFAULT_HERO }: { content?: HeroContent 
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6"
+            transition={{ duration: 0.6, delay: 0.1 }}            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-4 sm:mb-6 break-words text-balance"
           >
             <span className="gradient-text animate-gradient-shift">
               {content.title}
@@ -53,7 +53,7 @@ export function HeroSection({ content = DEFAULT_HERO }: { content?: HeroContent 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed"
+            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-4 sm:mb-6 leading-relaxed break-words"
           >
             {content.subtitle}
           </motion.p>
@@ -62,7 +62,7 @@ export function HeroSection({ content = DEFAULT_HERO }: { content?: HeroContent 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed"
+            className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-10 leading-relaxed break-words"
           >
             {content.description}
           </motion.p>
@@ -71,7 +71,7 @@ export function HeroSection({ content = DEFAULT_HERO }: { content?: HeroContent 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-10 sm:mb-16"
           >
             <Button asChild size="lg" className="rounded-full px-8 h-14 text-base group">
               <Link href="#order">

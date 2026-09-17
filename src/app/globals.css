@@ -184,6 +184,26 @@
     scroll-behavior: smooth;
   }
 
+  /* Prevent horizontal scrolling on mobile — clipped/off-canvas content
+     should never widen the page (fallback for browsers without clip). */
+  html,
+  body {
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
+
+  /* Wrap-safe typography: headings (many are admin-editable titles) must
+     never push text past the viewport on small screens, no matter what
+     long words the admin enters. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow-wrap: break-word;
+  }
+
   ::selection {
     @apply bg-primary/20 text-primary;
   }
