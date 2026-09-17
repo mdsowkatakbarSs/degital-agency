@@ -23,6 +23,8 @@ import {
   formatDeliveryDays,
   TIER_LABELS,
 } from "@/lib/gigs";
+import { SafeImage } from "@/components/safe-image";
+
 const TIER_COLORS: Record<string, string> = {
   basic: "border-blue-500/50 bg-blue-500/5",
   standard: "border-yellow-500/50 bg-yellow-500/5",
@@ -194,28 +196,15 @@ export default function GigDetailPage() {
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-2 space-y-8"
           >
-            {/* Cover Image */}
+            {/* Cover Image — falls back to a platform-tinted placeholder on error */}
             <div className="relative aspect-video rounded-2xl overflow-hidden bg-muted/30">
-              {gig.cover_image_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={gig.cover_image_url}
-                  alt={gig.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div
-                  className="w-full h-full flex items-center justify-center"
-                  style={{ backgroundColor: `${color}08` }}
-                >
-                  <span
-                    className="text-6xl font-bold opacity-20"
-                    style={{ color }}
-                  >
-                    {PLATFORM_LABELS[gig.platform]?.slice(0, 1)}
-                  </span>
-                </div>
-              )}
+              <SafeImage
+                src={gig.cover_image_url || ""}
+                alt={gig.title}
+                platform={gig.platform}
+                className="w-full h-full"
+                eager
+              />
             </div>
 
             {/* Title & Meta */}
@@ -272,12 +261,12 @@ export default function GigDetailPage() {
                         style={isSelected ? { borderColor: color } : undefined}
                       >
                         {pkg.image_url ? (
-                          <div className="relative aspect-video rounded-xl overflow-hidden mb-3 bg-muted/30">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
+                          <div className="relative mb-3">
+                            <SafeImage
                               src={pkg.image_url}
                               alt={pkg.name}
-                              className="w-full h-full object-cover"
+                              platform={gig.platform}
+                              className="aspect-video w-full rounded-xl"
                             />
                             {isSelected && (
                               <div

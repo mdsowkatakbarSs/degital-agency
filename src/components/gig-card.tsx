@@ -10,6 +10,7 @@ import {
   formatPrice,
   formatDeliveryDays,
 } from "@/lib/gigs";
+import { SafeImage } from "@/components/safe-image";
 
 interface GigCardProps {
   gig: GigWithPackages;
@@ -52,23 +53,16 @@ export function GigCard({ gig, index = 0 }: GigCardProps) {
     >
       <Link href={`/gigs/${gig.slug}`} className="block group">
         <div className="relative rounded-2xl border border-border/50 bg-background overflow-hidden transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1">
-          {/* Cover Image */}
-          <div className="relative aspect-video bg-muted/30 overflow-hidden">
-            {gig.cover_image_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={gig.cover_image_url}
-                alt={gig.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            ) : (
-              <div
-                className="w-full h-full flex items-center justify-center"
-                style={{ backgroundColor: `${color}08` }}
-              >
-                <PlatformIcon platform={gig.platform} />
-              </div>
-            )}
+          {/* Cover Image — falls back to a platform-tinted placeholder on error */}
+          <div className="relative aspect-video bg-muted/30">
+            <SafeImage
+              src={gig.cover_image_url || ""}
+              alt={gig.title}
+              platform={gig.platform}
+              className="w-full h-full"
+              imgClassName="transition-transform duration-500 group-hover:scale-105"
+              eager={index === 0}
+            />
 
             {/* Platform Badge */}
             <div className="absolute top-3 left-3">
