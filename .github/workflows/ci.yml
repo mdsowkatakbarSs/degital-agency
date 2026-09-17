@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Needed at build AND runtime (pages fetch Supabase server-side).
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check Supabase configuration
+        id: cfg
+        run: echo "has_secrets=${{ secrets.NEXT_PUBLIC_SUPABASE_URL != '' }}" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install chromium --with-deps
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Restore production sitemap files
+        run: |
+          git checkout -- public/robots.txt public/sitemap-0.xml public/sitemap.xml 2>/dev/null || true
+
+      - name: Start production server and audit
+        if: steps.cfg.outputs.has_secrets == 'true'
+        run: |
+          npm run start &
+          for i in $(seq 1 30); do
+            curl -sf -o /dev/null http://localhost:3000/ && break
+            sleep 2
+          done
+          npm run audit:site
+
+      - name: Skipped audit notice
+        if: steps.cfg.outputs.has_secrets != 'true'
+        run: |
+          echo "## Supabase secrets not configured" >> "$GITHUB_STEP_SUMMARY"
+          echo "Typecheck and build passed, but the browser audit was skipped." >> "$GITHUB_STEP_SUMMARY"
+          echo "Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY as repository secrets to enable it." >> "$GITHUB_STEP_SUMMARY"
